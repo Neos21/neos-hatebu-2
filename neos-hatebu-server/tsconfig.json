@@ -1,21 +1,29 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es2017",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    // 基本情報
+    "module"     : "commonjs",  // Node.js で利用するので `commonjs` を指定する
+    "target"     : "es2017",    // ビルド後のコードが対象とするバージョン・トランスパイル要件になる
+    "baseUrl"    : ".",         // 相対パスのモジュール名を `./src/main` とも `./main` とも解決できるようにプロジェクトルートを示しておく
+    "outDir"     : "./dist",    // ビルド後のファイルの出力先ディレクトリ
+    "incremental": true,        // `dist/tsconfig.build.tsbuildinfo` ファイルを生成し差分ビルドを実現する
+    
+    // 実装時の型チェック : `strict: true` は厳しすぎるので個別に指定する
+    "allowSyntheticDefaultImports"    : true,   // デフォルトインポートについて `import * as Module` 記法を `import Module as` と書けるようにする
+    "forceConsistentCasingInFileNames": false,  // ファイル名についてケースインセンシティブにする
+    "noFallthroughCasesInSwitch"      : false,  // `switch` での `break` 漏れを検出する
+    "noImplicitAny"                   : true,   // 型が類推不可能な時にエラーになる・明示的に型定義が必要になる
+    "noImplicitThis"                  : true,   // `this` の型が類推不可能な場合にエラーになる
+    "skipLibCheck"                    : true,   // 外部ライブラリの `.d.ts` に対して型チェックをしない
+    "strictBindCallApply"             : false,  // `apply()`・`bind()`・`call()` の型判定を厳格化する
+    "strictNullChecks"                : true,   // `null`・`undefined` になりうる場合を厳格にチェックする
+    
+    // NestJS 用設定
+    "emitDecoratorMetadata" : true,  // `reflect-metadata` とともに NestJS では `@Injectable` の解決のために必須
+    "experimentalDecorators": true,  // デコレータの実験的なサポートに関する警告を非表示にする
+    
+    // ビルド後成果物の設定
+    "declaration"   : false,  // 型定義 `.d.ts` を出力しない
+    "removeComments": true,   // コメントを削除する
+    "sourceMap"     : false   // Source Map を出力しない
   }
 }
