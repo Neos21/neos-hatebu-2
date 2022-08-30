@@ -3,18 +3,18 @@
   "description": "Neo's Hatebu Client",
   "private": true,
   "scripts": {
-    "//": "echo 'Production'",
+    "//": "echo 'Production : After build, `$ npx sirv-cli ./ --host 0.0.0.0` then access `http://localhost:8080/dist/index.html`'",
     "//": "echo '------------------------------------------------------------'",
     "build": "ng build",
     
     "//": "echo 'Development'",
     "//": "echo '------------------------------------------------------------'",
     "?start": "echo 'Please publish WSL IP before executing this'",
-    "start": "ng serve",
+    "start" : "ng serve",
     
     "//": "echo 'Dependencies And DevDependencies Commands'",
     "//": "echo '------------------------------------------------------------'",
-    "ng": "ng",
+    "ng" : "ng",
     "tsc": "tsc"
   },
   "dependencies": {
