@@ -1,32 +1,54 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
+// Angular 用 TSConfig : https://angular.io/config/tsconfig
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "sourceMap": true,
-    "declaration": false,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "moduleResolution": "node",
-    "importHelpers": true,
-    "target": "es2020",
-    "module": "es2020",
-    "lib": [
-      "es2020",
-      "dom"
-    ]
+    // 基本情報
+    "module"          : "es2020",  // ESModules としてモジュール読み込みを解決する (`es2015`・`esnext` なども同義)
+    "moduleResolution": "node",    // Node.js を利用するための指定
+    "target"          : "es2020",  // ビルド後のコードが対象とするバージョン・トランスパイル要件になる
+    "baseUrl"         : ".",       // 相対パスのモジュール名を `./src/main` とも `./main` とも解決できるようにプロジェクトルートを示しておく
+    "outDir"          : "./dist",  // ビルド後のファイルの出力先ディレクトリ
+    "lib": [     // `target` にない利用したい機能がある場合は指定する
+      "es2020",  // `target` 以上の ES Edition の機能を使用したい場合は記載する
+      "dom"      // ブラウザ向けのスクリプトでは指定する
+    ],
+    "types": [],  // 通常は `./node_modules/@types/` 配下の `@type` パッケージが読み込まれるが厳格にパッケージ名を指定したい場合はココに書く
+    
+    // 実装時の型チェック
+    "forceConsistentCasingInFileNames"  : true,  // ファイル名についてケースインセンシティブにする
+    "noFallthroughCasesInSwitch"        : true,  // `switch` での `break` 漏れを検出する (`true`)
+    "noImplicitOverride"                : true,  // `override 修飾子の付与を強制する
+    "noImplicitReturns"                 : true,  // 明示的な `return` を強制する
+    "noPropertyAccessFromIndexSignature": true,  // インデックス型に対するアクセスをインデックス記法に強制する
+    "strict"                            : true,  // 以下が有効になる
+      // alwaysStrict                  // JavaScript に `use strict` が付与され Strict モードになる
+      // noImplicitAny                 // 型が類推不可能な時にエラーになる・明示的に型定義が必要になる
+      // noImplicitThis                // `this` の型が類推不可能な場合にエラーになる
+      // useUnknownInCatchVariables    // `catch` 句のエラーを `unknown` として扱う
+      // strictBindCallApply           // `apply()`・`bind()`・`call()` の型判定を厳格化する
+      // strictFunctionTypes           // 引数の共変性を許容しない
+      // strictNullChecks              // `null`・`undefined` になりうる場合を厳格にチェックする
+      // strictPropertyInitialization  // クラスプロパティの初期化を必須にする
+    
+    // Angular 用設定
+    "experimentalDecorators": true,  // デコレータの実験的なサポートに関する警告を非表示にする
+    
+    // ビルド後成果物の設定
+    "declaration"       : false,  // 型定義 `.d.ts` を出力しない
+    "downlevelIteration": true,   // 古いバージョンの JS にトランスパイルする
+    "importHelpers"     : true,   // Polyfill が必要な場合に `tslib` から `import` する・`$ npm i -S tslib` が必要になる恐れがある
+    "sourceMap"         : false   // Source Map を出力しない
   },
-  "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  }
+  "angularCompilerOptions": {  // https://angular.jp/guide/angular-compiler-options
+    "enableI18nLegacyMessageIdFormat": false,  // `i18n` 属性を使用した旧来のコード向け処理を無効化する
+    "strictInjectionParameters"      : true,   // サポートされていない DI をエラーにする
+    "strictInputAccessModifiers"     : true,   // Input バインディング時にアクセス修飾子に従って厳格化する
+    "strictTemplates"                : true    // テンプレート内の型チェックを厳格化する
+  },
+  "files": [  // 含めるファイルリスト・Glob パターンは使用できない
+    "./src/main.ts"
+  ],
+  "include": [  // Glob パターンを使用して含めるファイルを指定する
+    "./src/**/*.d.ts"
+  ]
 }

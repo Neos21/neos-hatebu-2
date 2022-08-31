@@ -21,7 +21,7 @@
     "//": "echo '------------------------------------------------------------'",
     "nest"                  : "nest",
     "rimraf"                : "rimraf",
-    "eslint"                : "exlint",
+    "eslint"                : "eslint",
     "eslint-config-prettier": "eslint-config-prettier",
     "prettier"              : "prettier",
     "ts-node"               : "ts-node",
