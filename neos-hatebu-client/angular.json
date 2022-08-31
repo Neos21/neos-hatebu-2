@@ -5,63 +5,111 @@
   "projects": {
     "neos-hatebu-client": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:class"      : { "skipTests": true },
-        "@schematics/angular:component"  : { "skipTests": true },
-        "@schematics/angular:directive"  : { "skipTests": true },
-        "@schematics/angular:guard"      : { "skipTests": true },
-        "@schematics/angular:interceptor": { "skipTests": true },
-        "@schematics/angular:pipe"       : { "skipTests": true },
-        "@schematics/angular:resolver"   : { "skipTests": true },
-        "@schematics/angular:service"    : { "skipTests": true }
-      },
-      "root"      : ".",
-      "sourceRoot": "./src",
-      "prefix"    : "app",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
       "architect": {
-        "build": {  // `$ ng build` : https://github.com/angular/angular-cli/blob/14.2.1/packages/angular_devkit/build_angular/src/builders/browser/schema.json
+        "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "./dist",
-            "index"     : "./src/index.html",
-            "main"      : "./src/main.ts",
-            "tsConfig"  : "./tsconfig.json",
+            "outputPath": "dist/neos-hatebu-client",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
             "assets": [
-              "./src/favicon.ico",
-              "./src/assets"
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
-              "./src/styles.css"
-            ]
+              "src/styles.css"
+            ],
+            "scripts": []
           },
           "configurations": {
-            "development": {  // 開発サーバでは `BaseHref` を変更しない
-              "buildOptimizer" : false,
-              "extractLicenses": false,
-              "namedChunks"    : true,
-              "optimization"   : false
-            },
             "production": {
-              "baseHref"        : "./",
-              "extractLicenses" : false,
-              "fileReplacements": [{
-                "replace": "src/environments/environment.ts",  // `import` 文中のパス名に影響するので変更しないこと
-                "with"   : "src/environments/environment.prod.ts"
-              }],
-              "outputHashing"   : "all"
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"
         },
-        "serve": {  // `$ ng serve` : https://github.com/angular/angular-cli/blob/14.2.1/packages/angular_devkit/build_angular/src/builders/server/schema.json
+        "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "development": { "browserTarget": "neos-hatebu-client:build:development", "host": "0.0.0.0", "disableHostCheck": true },
-            "production" : { "browserTarget": "neos-hatebu-client:build:production" , "host": "0.0.0.0", "disableHostCheck": true }
+            "production": {
+              "browserTarget": "neos-hatebu-client:build:production"
+            },
+            "development": {
+              "browserTarget": "neos-hatebu-client:build:development"
+            }
           },
           "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "neos-hatebu-client:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
+  },
+  "cli": {
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }
