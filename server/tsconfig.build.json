@@ -1,8 +1,0 @@
-// `$ nest build` コマンドが自動的にこのファイルを参照する (`nest-cli.json` の `$schema` 説明より)
-{
-  "extends": "./tsconfig.json",
-  "exclude": [
-    "./dist",
-    "./node_modules"
-  ]
-}

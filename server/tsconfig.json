@@ -25,5 +25,10 @@
     "declaration"   : false,  // 型定義 `.d.ts` を出力しない
     "removeComments": true,   // コメントを削除する
     "sourceMap"     : false   // Source Map を出力しない
-  }
+  },
+  // 本来 `$ nest build` コマンドは `tsconfig.build.json` を必要とするが `nest-cli.json` を変更しコチラに統合してある・`nest-cli.json` はコメントがあると動作しない・詳細は `$schema` 説明を参照
+  "exclude": [
+    "./dist",
+    "./node_modules"
+  ]
 }
