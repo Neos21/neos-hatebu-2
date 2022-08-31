@@ -6,4 +6,7 @@ Thumbs.db
 node_modules/
 
 dist/
+
 client/.angular/cache/
+
+server/db/*.db
