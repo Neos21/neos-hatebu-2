@@ -6,4 +6,4 @@ Thumbs.db
 node_modules/
 
 dist/
-neos-hatebu-client/.angular/cache/
+client/.angular/cache/
