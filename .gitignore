@@ -5,8 +5,12 @@ Thumbs.db
 
 node_modules/
 
+# Common
+.env
 dist/
 
+# Client
 client/.angular/cache/
 
+# Server
 server/db/*.db
