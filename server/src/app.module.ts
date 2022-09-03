@@ -18,7 +18,6 @@ import { NgDomain } from './entities/ng-domain';
 // Modules
 import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
-import { EntriesModule } from './entries/entries.module';
 import { NgUrlsModule } from './ng-urls/ng-urls.module';
 import { NgWordsModule } from './ng-words/ng-words.module';
 import { NgDomainsModule } from './ng-domains/ng-domains.module';
@@ -49,7 +48,6 @@ import { AppService } from './app.service';
     // Modules
     AuthModule,
     CategoriesModule,
-    EntriesModule,
     NgUrlsModule,
     NgWordsModule,
     NgDomainsModule,
@@ -60,7 +58,6 @@ import { AppService } from './app.service';
         children: [
           AuthModule,
           CategoriesModule,
-          // `EntriesModule` は API ナシ
           NgUrlsModule,
           NgWordsModule,
           NgDomainsModule

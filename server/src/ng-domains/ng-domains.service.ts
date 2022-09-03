@@ -8,7 +8,7 @@ import { NgDomain } from '../entities/ng-domain';
 /** NG ドメインサービス */
 @Injectable()
 export class NgDomainsService {
-  constructor(@InjectRepository(NgDomain) private ngDomainsRepository: Repository<NgDomain>) { }
+  constructor(@InjectRepository(NgDomain) private readonly ngDomainsRepository: Repository<NgDomain>) { }
   
   /**
    * 全件取得する

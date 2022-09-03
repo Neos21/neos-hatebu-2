@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 /** NG URL : `title` ～ `thumbnail_url` カラムは `entries` テーブルと同じ */
 @Entity('ng_urls')
@@ -36,8 +36,8 @@ export class NgUrl {
   public thumbnailUrl: string;
   
   /** 登録日時 (一定期間後に削除するため) */
-  @Column({ type: 'text', name: 'created_at' })
-  public createdAt: string;
+  @CreateDateColumn({ name: 'created_at' })
+  public createdAt: Date;
   
   constructor(partial: Partial<NgUrl>) {
     Object.assign(this, partial);

@@ -8,7 +8,7 @@ import { NgUrl } from '../entities/ng-url';
 /** NG URL サービス */
 @Injectable()
 export class NgUrlsService {
-  constructor(@InjectRepository(NgUrl) private ngUrlsRepository: Repository<NgUrl>) { }
+  constructor(@InjectRepository(NgUrl) private readonly ngUrlsRepository: Repository<NgUrl>) { }
   
   /**
    * 全件取得する
@@ -40,6 +40,6 @@ export class NgUrlsService {
    * @return 削除結果
    */
   public async removeByCreatedAt(createdAt: string): Promise<DeleteResult> {
-    return await this.ngUrlsRepository.delete({ createdAt: createdAt });  // TODO : 後で実装する `created_at < YYYY-MM-DD
+    return await this.ngUrlsRepository.delete({});  // TODO : 後で実装する `created_at < YYYY-MM-DD
   }
 }

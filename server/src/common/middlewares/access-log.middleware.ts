@@ -20,7 +20,7 @@ export class AccessLogMiddleware implements NestMiddleware {
     const cyan   = colourIfAllowed((text) => `\x1B[96m${text}\x1B[39m`);
     
     // アクセスログを出力する
-    Logger.log(yellow(`[${req.method}]`) + ' ' + cyan(`[${req.url}]`));
+    Logger.log(yellow(`[${req.method}]`) + ' ' + cyan(`[${req.baseUrl}]`));
     
     next();
   }

@@ -1,14 +1,26 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { InsertResult, Repository, UpdateResult } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
 import { Category } from '../entities/category';
 
 /** カテゴリサービス */
 @Injectable()
-export class CategoriesService {
-  constructor(@InjectRepository(Category) private categoriesRepository: Repository<Category>) { }
+export class CategoriesService implements OnModuleInit {
+  constructor(@InjectRepository(Category) private readonly categoriesRepository: Repository<Category>) { }
+  
+  /** 本モジュール起動時にデータが存在しなければカテゴリマスタを投入する */
+  public async onModuleInit(): Promise<void> {
+    const countAll = await this.countAll();
+    if(countAll === 0) {
+      Logger.warn('CategoriesService#onModuleInit() : Execute Create Categories');
+      await this.createCategories();
+    }
+    else {
+      Logger.log('CategoriesService#onModuleInit() : Categories Are Already Exist. Do Nothing');
+    }
+  }
   
   /**
    * 全件取得する
@@ -28,16 +40,38 @@ export class CategoriesService {
    * @param id ID
    * @return 取得結果
    */
-  public async findById(id: number): Promise<Category | null> {
-    return await this.categoriesRepository.findOneBy({ id: id });
+  public async findById(id: number): Promise<Category> {
+    return await this.categoriesRepository.findOneOrFail({
+      where: { id: id },  // ID 指定
+      relations: { entries: true }  // 紐付く記事一覧を取得する
+    });
+  }
+  
+  /**
+   * 対象カテゴリの最終クロール日時を更新する
+   * 
+   * @param id ID
+   * @return 更新結果
+   */
+   public async updateUpdatedAt(id: number): Promise<UpdateResult> {
+    return await this.categoriesRepository.update(id, {});  // 現在日時で更新させる
   }
   
   
   // 初期処理用
   // ================================================================================
   
+  /**
+   * テーブルの全レコード件数を取得する
+   * 
+   * @return レコード件数
+   */
+  private async countAll(): Promise<number> {
+    return this.categoriesRepository.count();
+  }
+  
   /** 初期データとしてカテゴリマスタを登録する */
-  public async createCategories(): Promise<void> {
+  private async createCategories(): Promise<void> {
     Logger.log('Create Categories : Start');
     const categories = [
       new Category({ name: '総合 - 人気'          , rssUrl: 'http://b.hatena.ne.jp/hotentry.rss'               , pageUrl: 'http://b.hatena.ne.jp/hotentry/all'            }),
@@ -62,33 +96,9 @@ export class CategoriesService {
       new Category({ name: 'アニメとゲーム - 新着', rssUrl: 'http://b.hatena.ne.jp/entrylist/game.rss'         , pageUrl: 'http://b.hatena.ne.jp/entrylist/game'          })
     ];
     for(const [index, category] of Object.entries(categories)) {
-      const insertResult = await this.create(category);
-      Logger.log(`  [${index}] ${category.name} : Inserted`, insertResult);
+      const insertResult = await this.categoriesRepository.insert(category);
+      Logger.log(`  [${index}] ${category.name} : Inserted`, JSON.stringify(insertResult));
     }
     Logger.log('Create Categories : Succeeded');
-  }
-  
-  /**
-   * 登録する
-   * 
-   * @param category 登録する内容
-   * @return 登録結果
-   */
-  private async create(category: Category): Promise<InsertResult> {
-    return await this.categoriesRepository.insert(category);
-  }
-  
-  
-  // バッチ処理用
-  // ================================================================================
-  
-  /**
-   * 対象カテゴリの最終クロール日時を更新する
-   * 
-   * @param id ID
-   * @return 更新結果
-   */
-  public async updateUpdatedAt(id: number): Promise<UpdateResult> {
-    return await this.categoriesRepository.update(id, { updatedAt: 'TODO' });  // TODO : 現在日時に更新する
   }
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Category } from './category';
 
@@ -42,11 +42,11 @@ export class Entry {
   public thumbnailUrl: string;
   
   /** 最終クロール日時 */
-  @Column({ type: 'text', name: 'updated_at' })
-  public updatedAt: string;
+  @UpdateDateColumn({ name: 'updated_at' })
+  public updatedAt: Date;
   
   /** カテゴリ情報 (親) との親子関係を示す (カラムは作られない) */
-  @ManyToOne((/* type */) => Category, (category) => category.entries)  // 親との関係を示す
+  @ManyToOne((type) => Category, (category) => category.entries, { createForeignKeyConstraints: false })  // eslint-disable-line @typescript-eslint/no-unused-vars
   @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })  // 本 `entries.category_id` が `categories.id` (親) の Foreign Key であることを示す
   public category: Category;
   

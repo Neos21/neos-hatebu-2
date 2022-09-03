@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Entry } from './entry';
 
@@ -22,11 +22,11 @@ export class Category {
   public pageUrl: string;
   
   /** 最終クロール日時 */
-  @Column({ type: 'text', name: 'updated_at' })
-  public updatedAt: string;
+  @UpdateDateColumn({ name: 'updated_at' })
+  public updatedAt: Date;
   
-  /** 記事情報 (子) との親子関係を示す (カラムは作られない) */
-  @OneToMany((/* type */) => Entry, (entry) => entry.categoryId)
+  /** 記事情報 (子) との親子関係を示す (カラムは作られない) : `entry.categoryId` ではなく `@ManyToOne` で指定した `entry.category` と相互紐付けをする */
+  @OneToMany((type) => Entry, (entry) => entry.category, { createForeignKeyConstraints: false })  // eslint-disable-line @typescript-eslint/no-unused-vars
   public entries: Array<Entry>;
   
   constructor(partial: Partial<Category>) {

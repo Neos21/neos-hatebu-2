@@ -8,7 +8,7 @@ import { NgWord } from '../entities/ng-word';
 /** NG ワードサービス */
 @Injectable()
 export class NgWordsService {
-  constructor(@InjectRepository(NgWord) private ngWordsRepository: Repository<NgWord>) { }
+  constructor(@InjectRepository(NgWord) private readonly ngWordsRepository: Repository<NgWord>) { }
   
   /**
    * 全件取得する
