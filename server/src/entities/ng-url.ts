@@ -35,7 +35,7 @@ export class NgUrl {
   @Column({ type: 'text', name: 'thumbnail_url' })
   public thumbnailUrl: string;
   
-  /** 登録日 (一定期間後に削除するため) */
+  /** 登録日時 (一定期間後に削除するため) */
   @Column({ type: 'text', name: 'created_at' })
   public createdAt: string;
   

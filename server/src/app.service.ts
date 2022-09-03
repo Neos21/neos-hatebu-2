@@ -1,28 +1,14 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 
-import { Repository } from 'typeorm';
-
-import { NgDomain } from './entities/ng-domain';
-
+/** App サービス */
 @Injectable()
 export class AppService {
-  constructor(
-    @InjectRepository(NgDomain) private ngDomainsRepository: Repository<NgDomain>
-  ) { }
-    
-  public getHello(): string {
-    return 'Hello World!';
-  }
-  
-  /** TODO : TypeORM テスト用関数 */
-  public async testFindAll(): Promise<Array<NgDomain>> {
-    // テストデータを投入する
-    //const saved = await this.ngDomainsRepository.save(new NgDomain({ domain: 'example.com' }));
-    //Logger.log('Saved :', saved);
-    // 全件取得して返す
-    const founds = await this.ngDomainsRepository.find();
-    Logger.log('Founds : ', founds);
-    return founds;
+  /**
+   * API ルートを示すテキストを返す
+   * 
+   * @return テキスト
+   */
+  public getApiRoot(): string {
+    return 'Neo\'s Hatebu API';
   }
 }
