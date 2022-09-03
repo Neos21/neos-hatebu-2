@@ -6,7 +6,7 @@ import { Request } from 'express';
 import { LocalAuthGuard } from './local-auth.guard';
 
 /** 認証ルーティング・コントローラ */
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private jwtService: JwtService) {}
   

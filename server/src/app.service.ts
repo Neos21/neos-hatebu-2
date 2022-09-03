@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -19,10 +19,10 @@ export class AppService {
   public async testFindAll(): Promise<Array<NgDomain>> {
     // テストデータを投入する
     //const saved = await this.ngDomainsRepository.save(new NgDomain({ domain: 'example.com' }));
-    //console.log('Saved :', saved);
+    //Logger.log('Saved :', saved);
     // 全件取得して返す
     const founds = await this.ngDomainsRepository.find();
-    console.log('Founds : ', founds);
+    Logger.log('Founds : ', founds);
     return founds;
   }
 }
