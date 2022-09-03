@@ -19,15 +19,23 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: path.resolve(__dirname, '../db/neos-hatebu.sqlite3.db'),
-      entities: [NgDomain],
+      entities: [
+        NgDomain
+      ],
       synchronize: true
     }),
     // Repository を使えるようにする
-    TypeOrmModule.forFeature([NgDomain]),
-
+    TypeOrmModule.forFeature([
+      NgDomain
+    ]),
+    
     AuthModule
   ],
-  controllers: [AppController],
-  providers: [AppService]
+  controllers: [
+    AppController
+  ],
+  providers: [
+    AppService
+  ]
 })
-export class AppModule {}
+export class AppModule { }

@@ -8,14 +8,13 @@ import { NgDomain } from './entities/ng-domain';
 @Injectable()
 export class AppService {
   constructor(
-    @InjectRepository(NgDomain)
-    private ngDomainsRepository: Repository<NgDomain>
-  ) {}
-
+    @InjectRepository(NgDomain) private ngDomainsRepository: Repository<NgDomain>
+  ) { }
+    
   public getHello(): string {
     return 'Hello World!';
   }
-
+  
   /** TODO : TypeORM テスト用関数 */
   public async testFindAll(): Promise<Array<NgDomain>> {
     // テストデータを投入する

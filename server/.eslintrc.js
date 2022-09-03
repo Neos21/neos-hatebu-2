@@ -20,7 +20,7 @@ module.exports = {
     'eslint:recommended',  // ESLint 内蔵の推奨設定
     'plugin:@typescript-eslint/recommended',  // `@typescript-eslint/eslint-plugin` 推奨設定を利用する
     'plugin:@typescript-eslint/recommended-requiring-type-checking',  // `@typescript-eslint/eslint-plugin` より厳格なチェックを追加する : https://github.com/typescript-eslint/typescript-eslint/blob/v5.36.0/packages/eslint-plugin/src/configs/recommended-requiring-type-checking.ts
-    'prettier',  // `eslint-config-prettier` Prettier と競合する ESLint ルールを無効化する・`extends` の最後に書くこと・`prettier/@typescript-eslint` も併記する文献もあった v8.0.0 以降はこの `prettier` に統合されているため記載不要
+    // NOTE :  `eslint-config-prettier` = `'prettier'` ルールをこの `extends` の最後に書くことで、Prettier と競合する ESLint ルールを無効化できる。`prettier/@typescript-eslint` も併記する文献もあったが v8.0.0 以降はこの `prettier` に統合されているため記載不要
     // NOTE : `plugin:prettier/recommended` (`eslint-plugin-prettier`) は Prettier を ESLint から実行するためのプラグインだが現在は非推奨となり ESLint と Prettier を個別に実行することが推奨されている
   ],
   rules: {  // 個別ルールの調整

@@ -9,23 +9,28 @@ import { LocalStrategy } from './local.strategy';
 
 /**
  * 認証モジュール
- *
+ * 
  * - 参考 : https://docs.nestjs.com/security/authentication
  */
 @Module({
   imports: [
     ConfigModule,
-    PassportModule, // For `LocalStrategy#validate()`
+    PassportModule,  // For `LocalStrategy#validate()`
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      inject: [ConfigService], // `useFactory()` で使うサービスを注入する
+      inject: [ConfigService],  // `useFactory()` で使うサービスを注入する
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('NEOS_HATEBU_JWT_SECRET_KEY'), // 環境変数から注入する
-        signOptions: { expiresIn: '7 days' } // JWT アクセストークンの有効期限 https://github.com/vercel/ms
+        secret: configService.get<string>('NEOS_HATEBU_JWT_SECRET_KEY'),  // 環境変数から注入する
+        signOptions: { expiresIn: '7 days' }  // JWT アクセストークンの有効期限 : https://github.com/vercel/ms
       })
     })
   ],
-  controllers: [AuthController],
-  providers: [LocalStrategy, JwtStrategy]
+  controllers: [
+    AuthController
+  ],
+  providers: [
+    LocalStrategy,
+    JwtStrategy
+  ]
 })
-export class AuthModule {}
+export class AuthModule { }

@@ -3,18 +3,15 @@
   "description": "Neo's Hatebu Client",
   "private": true,
   "scripts": {
-    "//": "echo 'Production : After build, `$ npx sirv-cli ./ --host 0.0.0.0` then access `http://localhost:8080/dist/index.html`'",
-    "//": "echo '------------------------------------------------------------'",
+    "// Production": "echo 'Production : Serve `http://localhost:8080/dist/index.html` ----------'",
     "build": "ng build",
+    "serve": "npx sirv-cli ./ --host 0.0.0.0",
     
-    "//": "echo 'Development",
-    "//": "echo '------------------------------------------------------------'",
-    "?start": "echo 'Please publish WSL IP before executing this'",
-    "start" : "ng serve",
-    "lint"  : "ng lint",
+    "// Development": "echo 'Development : Before executing this, Publish WSL IP ----------------'",
+    "start": "ng serve",
+    "lint" : "ng lint",
     
-    "//": "echo 'Dependencies And DevDependencies Commands'",
-    "//": "echo '------------------------------------------------------------'",
+    "// Commands": "echo 'Dependencies And DevDependencies Commands -----------------------------'",
     "ng"    : "ng",
     "eslint": "eslint",
     "tsc"   : "tsc"
