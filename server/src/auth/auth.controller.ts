@@ -18,11 +18,11 @@ export class AuthController {
    * コレを Payload として `JwtService#sign()` の引数に設定して JWT アクセストークンを発行する
    * 
    * @param req リクエスト
-   * @return JWT アクセストークン
+   * @return ログイン成功時に JWT アクセストークンを返す
    */
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  public login(@Req() req: Request): { accessToken: string } {  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return { accessToken: this.jwtService.sign(req.user!) };  // ログイン成功時に JWT アクセストークンを返す
+  public login(@Req() req: Request): { accessToken: string } {
+    return { accessToken: this.jwtService.sign(req.user!) };  // eslint-disable-line @typescript-eslint/no-non-null-assertion
   }
 }

@@ -22,7 +22,7 @@ export class AppController {
   
   @UseGuards(JwtAuthGuard)
   @Get('test/profile')
-  public testGetProfile(@Req() req: Request): Express.User {  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return req.user!;
+  public testGetProfile(@Req() req: Request): Express.User {
+    return req.user!;  // eslint-disable-line @typescript-eslint/no-non-null-assertion
   }
 }
