@@ -8,17 +8,18 @@ import { Category } from '../entities/category';
 /** カテゴリサービス */
 @Injectable()
 export class CategoriesService implements OnModuleInit {
+  private readonly logger: Logger = new Logger(CategoriesService.name);
   constructor(@InjectRepository(Category) private readonly categoriesRepository: Repository<Category>) { }
   
   /** 本モジュール起動時にデータが存在しなければカテゴリマスタを投入する */
   public async onModuleInit(): Promise<void> {
     const countAll = await this.countAll();
     if(countAll === 0) {
-      Logger.warn('CategoriesService#onModuleInit() : Execute Create Categories');
+      this.logger.warn('#onModuleInit() : Execute Create Categories');
       await this.createCategories();
     }
     else {
-      Logger.log('CategoriesService#onModuleInit() : Categories Are Already Exist. Do Nothing');
+      this.logger.log('#onModuleInit() : Categories Are Already Exist. Do Nothing');
     }
   }
   
@@ -54,7 +55,7 @@ export class CategoriesService implements OnModuleInit {
    * @return 更新結果
    */
    public async updateUpdatedAt(id: number): Promise<UpdateResult> {
-    return await this.categoriesRepository.update(id, {});  // 現在日時で更新させる
+    return await this.categoriesRepository.update(id, {});  // 空更新することで現在日時で更新させる
   }
   
   
@@ -72,7 +73,7 @@ export class CategoriesService implements OnModuleInit {
   
   /** 初期データとしてカテゴリマスタを登録する */
   private async createCategories(): Promise<void> {
-    Logger.log('Create Categories : Start');
+    this.logger.log('#createCategories() : Start');
     const categories = [
       new Category({ name: '総合 - 人気'          , rssUrl: 'http://b.hatena.ne.jp/hotentry.rss'               , pageUrl: 'http://b.hatena.ne.jp/hotentry/all'            }),
       new Category({ name: '総合 - 新着'          , rssUrl: 'http://b.hatena.ne.jp/entrylist.rss'              , pageUrl: 'http://b.hatena.ne.jp/entrylist/all'           }),
@@ -97,8 +98,8 @@ export class CategoriesService implements OnModuleInit {
     ];
     for(const [index, category] of Object.entries(categories)) {
       const insertResult = await this.categoriesRepository.insert(category);
-      Logger.log(`  [${index}] ${category.name} : Inserted`, JSON.stringify(insertResult));
+      this.logger.log(`#createCategories() :   [${index}] ${category.name} : Inserted [${JSON.stringify(insertResult)}]`);
     }
-    Logger.log('Create Categories : Succeeded');
+    this.logger.log('#createCategories() : Succeeded');
   }
 }

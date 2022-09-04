@@ -6,7 +6,7 @@ import { ExtractJwt, Strategy as BaseJwtStrategy } from 'passport-jwt';  // Loca
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(BaseJwtStrategy) {
-  constructor(private configService: ConfigService) {
+  constructor(private readonly configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),  // Authorization Bearer から JWT アクセストークンを読み込むようにする
       ignoreExpiration: false,  // 有効期間を無視しない

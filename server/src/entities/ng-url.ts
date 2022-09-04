@@ -1,6 +1,11 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-/** NG URL : `title` ～ `thumbnail_url` カラムは `entries` テーブルと同じ */
+/**
+ * NG URL
+ * 
+ * - `title` ～ `thumbnail_url` は `entries` エンティティと同じ定義
+ * - 定期実行処理にて `created_at` が指定日時以前のレコードを一括削除する (TODO : 要実装)
+ */
 @Entity('ng_urls')
 export class NgUrl {
   /** ID */

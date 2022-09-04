@@ -16,7 +16,9 @@ import { EntriesService } from './entries.service';
       Entry
     ])
   ],
-  controllers: [CategoriesController],
+  controllers: [
+    CategoriesController
+  ],
   providers: [
     CategoriesService,
     EntriesService

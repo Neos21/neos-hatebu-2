@@ -9,7 +9,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 /** 認証ルーティング・コントローラ */
 @Controller('auth')
 export class AuthController {
-  constructor(private jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService) { }
   
   /**
    * パスワード認証によるログインを行い JWT アクセストークンを発行する
@@ -35,7 +35,7 @@ export class AuthController {
    */
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  public testGetProfile(@Req() req: Request): Express.User {
+  public getProfile(@Req() req: Request): Express.User {
     return req.user!;  // eslint-disable-line @typescript-eslint/no-non-null-assertion
   }
 }

@@ -1,6 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-/** NG ドメイン */
+/**
+ * NG ドメイン
+ * 
+ * - API 経由で新規追加と削除を行えるようにする (個別レコードの更新処理は用意しない)
+ */
 @Entity('ng_domains')
 export class NgDomain {
   /** ID */

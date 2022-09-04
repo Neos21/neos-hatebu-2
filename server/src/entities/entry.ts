@@ -1,8 +1,14 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Category } from './category';
 
-/** 記事 */
+/**
+ * 記事
+ * 
+ * - 「はてなブックマーク」よりスクレイピングした内容を保持する
+ * - 「NG URL」は別途定義しているため、本エンティティの個別レコードを更新・削除する機能は用意しない
+ * - スクレイピング時、当該カテゴリの既存レコードを全て削除してから新規追加するので、レコードの更新は発生しない (必ず削除 → 新規追加)
+ */
 @Entity('entries')
 export class Entry {
   /** ID */
@@ -41,12 +47,12 @@ export class Entry {
   @Column({ type: 'text', name: 'thumbnail_url' })
   public thumbnailUrl: string;
   
-  /** 最終クロール日時 */
-  @UpdateDateColumn({ name: 'updated_at' })
-  public updatedAt: Date;
+  /** クロール日時 */
+  @CreateDateColumn({ name: 'created_at' })
+  public createdAt: Date;
   
   /** カテゴリ情報 (親) との親子関係を示す (カラムは作られない) */
-  @ManyToOne((type) => Category, (category) => category.entries, { createForeignKeyConstraints: false })  // eslint-disable-line @typescript-eslint/no-unused-vars
+  @ManyToOne((_type) => Category, (category) => category.entries, { createForeignKeyConstraints: false })  // eslint-disable-line @typescript-eslint/no-unused-vars
   @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })  // 本 `entries.category_id` が `categories.id` (親) の Foreign Key であることを示す
   public category: Category;
   

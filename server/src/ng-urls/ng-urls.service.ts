@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { DeleteResult, InsertResult, Repository } from 'typeorm';
+import { DeleteResult, InsertResult, LessThan, Repository } from 'typeorm';
 
 import { NgUrl } from '../entities/ng-url';
 
@@ -39,7 +39,7 @@ export class NgUrlsService {
    * @param createdAt 登録日時
    * @return 削除結果
    */
-  public async removeByCreatedAt(createdAt: string): Promise<DeleteResult> {
-    return await this.ngUrlsRepository.delete({});  // TODO : 後で実装する `created_at < YYYY-MM-DD
+  public async removeByCreatedAt(createdAt: Date): Promise<DeleteResult> {
+    return await this.ngUrlsRepository.delete({ createdAt: LessThan(createdAt) });  // TODO : 記録される日時は恐らく UTC・いかに制御するか…
   }
 }

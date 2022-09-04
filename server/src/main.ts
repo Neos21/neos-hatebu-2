@@ -8,6 +8,8 @@ import { AppModule } from './app.module';
 
 /** サーバ起動 */
 async function bootstrap(): Promise<void> {
+  const logger = new Logger(bootstrap.name);
+  
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || 3000;
   await app.listen(port);
@@ -27,17 +29,17 @@ async function bootstrap(): Promise<void> {
   // 最長のパスに合わせて整形する
   const longestPathLength = Math.max(...endpoints.map((endpoint) => endpoint.path.length));
   // メソッド別に色別けする : https://github.com/mathieutu/vue-cli-plugin-express/blob/master/src/utils/routeTable.js
-  const methodsColourFunctions = {
+  const methodsColourFunctions: { [key: string]: (text: string) => string; } = {
     'GET'    : green,
     'POST'   : cyan,
     'PUT'    : yellow,
     'PATCH'  : yellow,
     'DELETE' : red,
     'OPTIONS': grey
-  } as { [key: string]: (text: string) => string; };
+  };
   const methodsOrders = Object.keys(methodsColourFunctions);
   const prepareMethods = (methods: Array<string>): string => methods
-    .sort((methodA, methodB) => methodsOrders.indexOf(methodA) - methodsOrders.indexOf(methodB))  // Sort By Method Name
+    .sort((methodA, methodB) => methodsOrders.indexOf(methodA) - methodsOrders.indexOf(methodB))  // Sort By `methodsOrders`
     .map((method) => {
       const colourFunction: (text: string) => string | undefined = methodsColourFunctions[method];
       return colourFunction ? colourFunction(method) : method;
@@ -45,7 +47,7 @@ async function bootstrap(): Promise<void> {
     .join(', ');
   
   // 起動ログ
-  Logger.log(cyan(`Server Started At Port [`) + yellow(`${port}`) + cyan(']'));
-  Logger.log(`${yellow('[Routes]')}\n` + endpoints.map((endpoint) => `    - ${endpoint.path.padEnd(longestPathLength, ' ')} : ${prepareMethods(endpoint.methods)}`).sort().join('\n'));
+  logger.log(cyan(`Server Started At Port [`) + yellow(`${port}`) + cyan(']'));
+  logger.log(`${yellow('Routes :')}\n` + endpoints.map((endpoint) => `    - ${endpoint.path.padEnd(longestPathLength, ' ')} : ${prepareMethods(endpoint.methods)}`).sort().join('\n'));
 }
 void bootstrap(); // 意図的に `await` しないことを示す `void` : https://github.com/typescript-eslint/typescript-eslint/blob/v5.36.0/packages/eslint-plugin/docs/rules/no-floating-promises.md#ignorevoid

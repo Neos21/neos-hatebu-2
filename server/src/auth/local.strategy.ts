@@ -7,7 +7,7 @@ import { Strategy as BaseLocalStrategy } from 'passport-local';  // JwtStrategy 
 /** Local Strategy : User Name と Password を使って認証を行うクラス */
 @Injectable()
 export class LocalStrategy extends PassportStrategy(BaseLocalStrategy) {
-  constructor(private configService: ConfigService) {
+  constructor(private readonly configService: ConfigService) {
     super({
       usernameField: 'userName',  // ユーザ認証時に POST するキーをデフォルトの `username` (全小文字) から変更する
       passwordField: 'password'
@@ -29,6 +29,6 @@ export class LocalStrategy extends PassportStrategy(BaseLocalStrategy) {
    */
   public validate(userName: string, password: string): { userName: string } {  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     if(userName !== this.configService.get<string>('NEOS_HATEBU_USERNAME') || password !== this.configService.get<string>('NEOS_HATEBU_PASSWORD')) throw new UnauthorizedException();  // 環境変数を参照する
-    return { userName };
+    return { userName: userName };
   }
 }
