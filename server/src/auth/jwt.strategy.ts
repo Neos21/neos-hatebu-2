@@ -10,7 +10,7 @@ export class JwtStrategy extends PassportStrategy(BaseJwtStrategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),  // Authorization Bearer から JWT アクセストークンを読み込むようにする
       ignoreExpiration: false,  // 有効期間を無視しない
-      secretOrKey: configService.get<string>('NEOS_HATEBU_JWT_SECRET_KEY')  // JWT アクセストークン発行に使用する秘密鍵を環境変数から取得する
+      secretOrKey: configService.get<string>('jwtSecretKey')  // JWT アクセストークン発行に使用する秘密鍵を環境変数から取得する
     });
   }
   

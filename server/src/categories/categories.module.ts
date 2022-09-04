@@ -23,5 +23,8 @@ import { EntriesService } from './entries.service';
     CategoriesService,
     EntriesService
   ],
+  exports: [
+    EntriesService  // `AppModule` で使うためエクスポートする
+  ]
 })
 export class CategoriesModule { }

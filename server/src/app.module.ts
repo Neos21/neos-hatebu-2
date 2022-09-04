@@ -3,9 +3,11 @@ import * as path from 'path';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { RouterModule } from '@nestjs/core';
+import { ScheduleModule} from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Common
+import configuration from './common/configs/configuration';
 import { AccessLogMiddleware } from './common/middlewares/access-log.middleware';
 
 // Entities
@@ -29,8 +31,11 @@ import { AppService } from './app.service';
 /** Neo's Hatebu Server */
 @Module({
   imports: [
-    // 環境変数注入をできるようにする
-    ConfigModule.forRoot(),
+    // 環境変数を注入する
+    ConfigModule.forRoot({
+      isGlobal: true,  // 各 Module での `imports` を不要にする
+      load: [configuration]  // 環境変数を読み取り適宜デフォルト値を割り当てるオブジェクトをロードする
+    }),
     // TypeORM : https://docs.nestjs.com/techniques/database
     TypeOrmModule.forRoot({
       type: 'sqlite',
@@ -44,6 +49,8 @@ import { AppService } from './app.service';
       ],
       synchronize: true
     }),
+    // Cron 定期実行機能
+    ScheduleModule.forRoot(),
     
     // Modules
     AuthModule,

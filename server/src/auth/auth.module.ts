@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigService, ConfigModule } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
@@ -14,14 +14,13 @@ import { LocalStrategy } from './local.strategy';
  */
 @Module({
   imports: [
-    ConfigModule,
     PassportModule,  // For `LocalStrategy#validate()`
     JwtModule.registerAsync({
-      imports: [ConfigModule],
+      // `AppModule` にて `isGlobal: true` でロードしているため、本 `@Module.imports` と `registerAsync.imports` に `ConfigModule` の記載が不要になる
       inject: [ConfigService],  // `useFactory()` で使うサービスを注入する
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('NEOS_HATEBU_JWT_SECRET_KEY'),  // 環境変数から注入する
-        signOptions: { expiresIn: '7 days' }  // JWT アクセストークンの有効期限 : https://github.com/vercel/ms
+        secret: configService.get<string>('jwtSecretKey'),  // 環境変数から注入する
+        signOptions: { expiresIn: configService.get<string>('jwtExpiresIn') }  // JWT アクセストークンの有効期限 : https://github.com/vercel/ms
       })
     })
   ],

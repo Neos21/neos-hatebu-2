@@ -12,6 +12,7 @@ import { NgUrlsService } from './ng-urls.service';
     TypeOrmModule.forFeature([NgUrl])  // Repository を使えるようにする
   ],
   controllers: [NgUrlsController],
-  providers: [NgUrlsService]
+  providers: [NgUrlsService],
+  exports: [NgUrlsService]  // `AppModule` で使うためエクスポートする
 })
 export class NgUrlsModule { }

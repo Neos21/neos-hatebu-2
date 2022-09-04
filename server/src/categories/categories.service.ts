@@ -15,7 +15,7 @@ export class CategoriesService implements OnModuleInit {
   public async onModuleInit(): Promise<void> {
     const countAll = await this.countAll();
     if(countAll === 0) {
-      this.logger.warn('#onModuleInit() : Execute Create Categories');
+      this.logger.warn('#onModuleInit() : Create Categories For First Time');
       await this.createCategories();
     }
     else {
@@ -54,7 +54,7 @@ export class CategoriesService implements OnModuleInit {
    * @param id ID
    * @return 更新結果
    */
-   public async updateUpdatedAt(id: number): Promise<UpdateResult> {
+  public async updateUpdatedAt(id: number): Promise<UpdateResult> {
     return await this.categoriesRepository.update(id, {});  // 空更新することで現在日時で更新させる
   }
   

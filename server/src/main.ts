@@ -1,8 +1,11 @@
 import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
 import { Express } from 'express';
 import * as expressListEndpoints from 'express-list-endpoints';
+
+import { cyan, green, grey, red, yellow } from './common/utils/colour-logger';
 
 import { AppModule } from './app.module';
 
@@ -11,17 +14,8 @@ async function bootstrap(): Promise<void> {
   const logger = new Logger(bootstrap.name);
   
   const app = await NestFactory.create(AppModule);
-  const port = process.env.PORT || 3000;
+  const port = app.get<ConfigService>(ConfigService).get<number>('port')!;  // eslint-disable-line @typescript-eslint/no-non-null-assertion
   await app.listen(port);
-  
-  // NestJS のロガー `cli-colors.util.js` を参照
-  const isColourAllowed = (): boolean => !process.env.NO_COLOR;
-  const colourIfAllowed = (colourFunction: (text: string) => string) => (text: string) => isColourAllowed() ? colourFunction(text) : text;
-  const green  = colourIfAllowed((text) => `\x1B[32m${text}\x1B[39m`);
-  const cyan   = colourIfAllowed((text) => `\x1B[96m${text}\x1B[39m`);
-  const yellow = colourIfAllowed((text) => `\x1B[33m${text}\x1B[39m`);
-  const red    = colourIfAllowed((text) => `\x1B[31m${text}\x1B[39m`);
-  const grey   = colourIfAllowed((text) => `\x1B[37m${text}\x1B[39m`);
   
   // List Routes : https://qiita.com/18kondo/items/1b9793e67b320f640ddd
   const router: Express = app.getHttpServer()._events.request._router;  // eslint-disable-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
