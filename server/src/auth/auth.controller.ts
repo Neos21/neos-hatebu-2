@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';  // `Req` と `Request` は同じ・型名が Express と衝突するので `Req` を使用した
 import { JwtService } from '@nestjs/jwt';
 
-import { Express, Request } from 'express';
+import { Request } from 'express';
 
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -31,11 +31,11 @@ export class AuthController {
    * JWT 認証の確認用 : ユーザ情報を返す
    * 
    * @param req リクエスト
-   * @return JWT 認証に成功した場合ユーザ情報 `{ userName: string; }`
+   * @return JWT 認証に成功した場合ユーザ情報
    */
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  public getProfile(@Req() req: Request): Express.User {
-    return req.user!;  // eslint-disable-line @typescript-eslint/no-non-null-assertion
+  public findProfile(@Req() req: Request): { userName: string; } {
+    return req.user as { userName: string; };
   }
 }

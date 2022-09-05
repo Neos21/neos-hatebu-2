@@ -22,7 +22,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
     catch(error) {
-      console.warn('自動再ログイン試行 : 失敗・ログイン画面にリダイレクトする', error);
+      console.warn('AuthGuard#canActivate() : 自動再ログイン試行失敗・ログイン画面にリダイレクトする', error);
       this.router.navigate(['/login']);
       return false;
     }

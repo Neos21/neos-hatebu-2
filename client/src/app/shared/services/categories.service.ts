@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
+import { firstValueFrom } from 'rxjs';
+
+import { environment } from '../../../environments/environment';
 import { Category } from '../classes/category';
 
 /** カテゴリサービス */
@@ -17,8 +20,8 @@ export class CategoriesService {
    * @return カテゴリ一覧
    */
   public async findAll(): Promise<Array<Category>> {
-    if(this.categories.length !== 0) {  // キャッシュがなければ取得してキャッシュする
-      this.categories = await this.httpClient.get(`/categories`).toPromise();  // TODO
+    if(this.categories.length === 0) {  // キャッシュがなければ取得してキャッシュする
+      this.categories = await firstValueFrom(this.httpClient.get<Array<Category>>(`${environment.serverUrl}/api/categories`));
     }
     return this.categories;
   }
@@ -32,15 +35,11 @@ export class CategoriesService {
   public async findById(id: number): Promise<Category> {
     const targetIndex = this.categories.findIndex((category) => category.id === id);
     if(targetIndex < 0) throw new Error('Category not found');  // カテゴリ一覧から指定のカテゴリ ID が見つからなかった
-    
-    // キャッシュがあればキャッシュを返す
-    const targetCategory = this.categories[targetIndex];
-    if(targetCategory.entries != null && targetCategory.entries.length !== 0) return targetCategory;
-    
-    // 取得してキャッシュする
-    const category = await this.httpClient.get(`/categories/${id}`).toPromise();  // TODO
-    this.categories[targetIndex] = category;
-    return category;
+    // キャッシュがなければ取得してキャッシュする
+    if(this.categories[targetIndex].entries == null || this.categories[targetIndex].entries.length !== 0) {
+      this.categories[targetIndex] = await firstValueFrom(this.httpClient.get<Category>(`${environment.serverUrl}/api/categories/${id}`));
+    }
+    return this.categories[targetIndex];
   }
   
   /**
@@ -49,7 +48,7 @@ export class CategoriesService {
    * @return カテゴリ一覧
    */
   public async reloadAll(): Promise<Array<Category>> {
-    this.categories = await this.httpClient.post(`/categories`).toPromise();
+    this.categories = await firstValueFrom(this.httpClient.post<Array<Category>>(`${environment.serverUrl}/api/categories`, {}));
     return this.categories;
   }
   
@@ -59,13 +58,10 @@ export class CategoriesService {
    * @param id カテゴリ ID
    * @return 指定のカテゴリ情報と記事一覧
    */
-  public async reloadById(id: number): Promise<void> {
+  public async reloadById(id: number): Promise<Category> {
     const targetIndex = this.categories.findIndex((category) => category.id === id);
     if(targetIndex < 0) throw new Error('Category not found');  // カテゴリ一覧から指定のカテゴリ ID が見つからなかった
-    
-    // 取得してキャッシュする
-    const category = await this.httpClient.post(`/categories/${id}`).toPromise();  // TODO
-    this.categories[targetIndex] = category;
-    return category;
+    this.categories[targetIndex] = await firstValueFrom(this.httpClient.post<Category>(`${environment.serverUrl}/api/categories/${id}`, {}));
+    return this.categories[targetIndex];
   }
 }

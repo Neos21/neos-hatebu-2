@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 
 import { CustomInterceptor } from './interceptors/custom.interceptor';
 
-/** Core Module : SharedModule を import せず独立させる */
+/** Core Module : `SharedModule` をインポートせず独立させる */
 @NgModule({
   imports: [
     CommonModule

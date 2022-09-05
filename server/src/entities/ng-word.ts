@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 /**
  * NG ワード
  * 
- * - API 経由で新規追加と削除を行えるようにする (個別レコードの更新処理は用意しない)
+ * - API 経由で登録と削除を行えるようにする (個別レコードを更新する機能は用意しない)
  */
 @Entity('ng_words')
 export class NgWord {

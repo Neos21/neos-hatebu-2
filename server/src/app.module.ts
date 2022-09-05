@@ -81,7 +81,7 @@ import { AppService } from './app.service';
 })
 export class AppModule {
   /**
-   * 独自のミドルウェアを追加する
+   * 独自のミドルウェア適用する
    * 
    * - 参考 : https://docs.nestjs.com/middleware
    * 
