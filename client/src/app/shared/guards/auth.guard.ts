@@ -1,14 +1,30 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
 /** 認証ガード */
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return true;
+  constructor(private readonly router: Router, private readonly authService: AuthService) { }  // TODO
+  
+  /**
+   * 画面遷移前に認証チェックする
+   * 
+   * @param _activatedRouteSnapshot ActivatedRouteSnapshot
+   * @param _routerStateSnapshot RouterStateSnapshot
+   * @return 遷移してよければ `true`、遷移させたくなければ `false` を返す
+   */
+  public async canActivate(): Promise<boolean> {
+    if(this.authService.isLogined) return true;  // ログイン済みであれば遷移を許可する
+    try {
+      await this.authService.reLogin();
+      return true;
+    }
+    catch(error) {
+      console.warn('自動再ログイン試行 : 失敗・ログイン画面にリダイレクトする', error);
+      this.router.navigate(['/login']);
+      return false;
+    }
   }
 }
