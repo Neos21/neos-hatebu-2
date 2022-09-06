@@ -14,6 +14,12 @@ async function bootstrap(): Promise<void> {
   const logger = new Logger(bootstrap.name);
   
   const app = await NestFactory.create(AppModule);
+  app.enableCors({  // CORS を有効にする : https://github.com/expressjs/cors#configuration-options
+    origin: (/localhost/),  // `localhost` を全て許可するため正規表現を使っている
+    methods: 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD',
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Credentials',
+    credentials: true  // `Access-Control-Allow-Credentials` を許可する
+  });
   const port = app.get<ConfigService>(ConfigService).get<number>('port')!;  // eslint-disable-line @typescript-eslint/no-non-null-assertion
   await app.listen(port);
   

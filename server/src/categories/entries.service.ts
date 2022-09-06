@@ -3,9 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { CheerioAPI, load } from 'cheerio';
 import fetch from 'node-fetch';
-import { DataSource, DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
-import { Category } from '../entities/category';
 import { Entry } from '../entities/entry';
 
 import { CategoriesService } from './categories.service';
@@ -20,39 +19,27 @@ export class EntriesService {
     private readonly categoriesService: CategoriesService
   ) { }
   
-  /**
-   * 全カテゴリについてスクレイピングして更新する
-   * 
-   * @return 全ての更新結果
-   */
-  public async scrapeAllEntries(): Promise<Array<{ category: Category; result: { deleteResult: DeleteResult; insertResult: InsertResult; updateResult: UpdateResult } }>> {
+  /** 全カテゴリについてスクレイピングして更新する */
+  public async scrapeAllEntries(): Promise<void> {
     this.logger.log('#scrapeAllEntries() : Start');
     const categories = await this.categoriesService.findAll();
-    const results = [];
     for(const [index, category] of Object.entries(categories)) {
       this.logger.log(`#scrapeAllEntries() :   [${index}] ${category.name} : Start`);
-      const result = await this.scrapeEntries(category.id, category.pageUrl);
-      results.push({ category, result });
+      await this.scrapeEntries(category.id, category.pageUrl);
       this.logger.log(`#scrapeAllEntries() :   [${index}] ${category.name} : Succeeded`);
     }
     this.logger.log('#scrapeAllEntries() : Succeeded');
-    return results;
   }
   
   /**
    * 指定のカテゴリについてスクレイピングして更新する
    * 
    * @param categoryId カテゴリ ID
-   * @param pageUrl ページ URL (引数で渡されていない場合は内部で SELECT する)
-   * @return 更新結果 (`entries` テーブルの一括削除結果・一括登録結果・`categories` テーブルの更新結果)
+   * @param pageUrl ページ URL (引数で渡されていない場合は内部で取得する)
    */
-  public async scrapeEntries(categoryId: number, pageUrl?: string): Promise<{ deleteResult: DeleteResult; insertResult: InsertResult; updateResult: UpdateResult }> {
-    let deleteResult = new DeleteResult();  // 型で文句言われるからとりあえず作っておく
-    let insertResult = new InsertResult();  // 型で文句言われるからとりあえず作っておく
-    let updateResult = new UpdateResult();  // 型で文句言われるからとりあえず作っておく
+  public async scrapeEntries(categoryId: number, pageUrl?: string): Promise<void> {
     await this.dataSource.transaction(async () => {
       this.logger.log(`#scrapeEntries() : Transaction Start : [${categoryId}] ${pageUrl ?? 'Unknown'}`);
-      
       // 引数でページ URL が渡されていない場合は取得する
       if(pageUrl == null) {
         const category = await this.categoriesService.findById(categoryId);
@@ -60,15 +47,14 @@ export class EntriesService {
         this.logger.log(`#scrapeEntries() :   Get Page URL : [${categoryId}] ${pageUrl}`);
       }
       
-      const html    = await this.crawlPage(pageUrl);                             // クロールする
-      const $       = this.convertHtmlToJQueryLikeObject(html);                  // jQuery ライクに変換する
-      const entries = this.transformToEntries(categoryId, $);                    // 抽出する
-      deleteResult  = await this.bulkRemove(categoryId);                         // 先に一括削除する
-      insertResult  = await this.bulkCreate(entries);                            // 一括登録する
-      updateResult  = await this.categoriesService.updateUpdatedAt(categoryId);  // カテゴリの最終クロール日時も更新する
+      const html    = await this.crawlPage(pageUrl);             // クロールする
+      const $       = this.convertHtmlToJQueryLikeObject(html);  // jQuery ライクに変換する
+      const entries = this.transformToEntries(categoryId, $);    // 抽出する
+      await this.bulkRemove(categoryId);                         // 先に一括削除する
+      await this.bulkCreate(entries);                            // 一括登録する
+      await this.categoriesService.updateUpdatedAt(categoryId);  // カテゴリの最終クロール日時も更新する
+      this.logger.log(`#scrapeEntries() : Transaction End : [${categoryId}] ${pageUrl}`);
     });
-    this.logger.log(`#scrapeEntries() : Transaction End : [${categoryId}] ${pageUrl}`);  // eslint-disable-line @typescript-eslint/restrict-template-expressions
-    return { deleteResult, insertResult, updateResult };
   }
   
   /**
@@ -128,19 +114,17 @@ export class EntriesService {
    * 一括登録する
    * 
    * @param entries 記事の配列
-   * @return 登録結果
    */
-  private async bulkCreate(entries: Array<Entry>): Promise<InsertResult> {
-    return this.entriesRepository.insert(entries);
+  private async bulkCreate(entries: Array<Entry>): Promise<void> {
+    await this.entriesRepository.insert(entries);
   }
   
   /**
    * 一括削除する
    * 
    * @param categoryId 削除するカテゴリ ID
-   * @return 削除結果
    */
-  private async bulkRemove(categoryId: number): Promise<DeleteResult> {
-    return this.entriesRepository.delete({ categoryId: categoryId });
+  private async bulkRemove(categoryId: number): Promise<void> {
+    await this.entriesRepository.delete({ categoryId: categoryId });
   }
 }

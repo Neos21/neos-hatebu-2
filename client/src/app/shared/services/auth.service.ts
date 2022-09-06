@@ -32,7 +32,7 @@ export class AuthService {
       window.localStorage.setItem(this.authInfoStorageKey, JSON.stringify({ userName, password, accessToken }));
       this.accessToken = accessToken;
       
-      // TODO : NG 情報・カテゴリ一覧の習得？
+      // TODO : NG 情報・カテゴリ一覧の取得？
     }
     catch(error) {
       console.warn('Failed To Login', { userName, password }, error);

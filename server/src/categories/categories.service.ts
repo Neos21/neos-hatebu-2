@@ -24,13 +24,13 @@ export class CategoriesService implements OnModuleInit {
   }
   
   /**
-   * 全件取得する
+   * 全カテゴリとそれぞれに紐付く記事一覧を取得する
    * 
    * @return 取得結果
    */
   public async findAll(): Promise<Array<Category>> {
     return await this.categoriesRepository.find({
-      relations: { entries: false },  // カテゴリのみ取得して記事は取得しない
+      relations: { entries: true },  // 紐付く記事一覧を取得する
       order: { id: 'ASC' }  // ID の昇順
     });
   }

@@ -1,7 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 
-import { DeleteResult, InsertResult } from 'typeorm';
-
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { NgDomain } from '../entities/ng-domain';
 
@@ -27,11 +25,11 @@ export class NgDomainsController {
    * 登録する
    * 
    * @param ngDomain 登録する内容
-   * @return 登録結果
+   * @return 登録後のエンティティ
    */
   @UseGuards(JwtAuthGuard)
   @Post()
-  public async create(@Body() ngDomain: NgDomain): Promise<InsertResult> {
+  public async create(@Body() ngDomain: NgDomain): Promise<NgDomain> {
     return await this.ngDomainsService.create(ngDomain);
   }
   
@@ -39,11 +37,10 @@ export class NgDomainsController {
    * 削除する
    * 
    * @param id 削除する ID
-   * @return 削除結果
    */
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  public async remove(@Param('id') id: number): Promise<DeleteResult> {
-    return await this.ngDomainsService.remove(id);
+  public async remove(@Param('id') id: number): Promise<void> {
+    await this.ngDomainsService.remove(id);
   }
 }

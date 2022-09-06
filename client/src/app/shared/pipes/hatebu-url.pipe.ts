@@ -12,6 +12,6 @@ export class HatebuUrlPipe implements PipeTransform {
   public transform(url: string): string {
     const encodedUrl = window.encodeURIComponent(url.replace((/^https?:\/\//), ''));
     // HTTPS の場合は `entry/s/` とする
-    return `http://b.hatena.ne.jp/entry/${url.startsWith('https') ? 's/' : ''}${encodedUrl}`;
+    return `https://b.hatena.ne.jp/entry/${url.startsWith('https') ? 's/' : ''}${encodedUrl}`;
   }
 }

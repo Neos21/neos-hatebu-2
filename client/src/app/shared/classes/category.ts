@@ -15,8 +15,6 @@ export class Category {
   
   /** 紐付くエントリ一覧 */
   public entries: Array<Entry>;
-  /** フィルタ済のエントリ一覧 */
-  public entryCount: number;
   
   constructor(partial: Partial<Category>) {
     Object.assign(this, partial);

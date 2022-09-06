@@ -1,7 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 
-import { DeleteResult, InsertResult } from 'typeorm';
-
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { NgWord } from '../entities/ng-word';
 
@@ -27,11 +25,11 @@ export class NgWordsController {
    * 登録する
    * 
    * @param ngWord 登録する内容
-   * @return 登録結果
+   * @return 登録後のエンティティ
    */
   @UseGuards(JwtAuthGuard)
   @Post()
-  public async create(@Body() ngWord: NgWord): Promise<InsertResult> {
+  public async create(@Body() ngWord: NgWord): Promise<NgWord> {
     return await this.ngWordsService.create(ngWord);
   }
   
@@ -39,11 +37,10 @@ export class NgWordsController {
    * 削除する
    * 
    * @param id 削除する ID
-   * @return 削除結果
    */
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  public async remove(@Param('id') id: number): Promise<DeleteResult> {
-    return await this.ngWordsService.remove(id);
+  public async remove(@Param('id') id: number): Promise<void> {
+    await this.ngWordsService.remove(id);
   }
 }

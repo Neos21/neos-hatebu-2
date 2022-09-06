@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
-import { InsertResult } from 'typeorm';
 
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { NgUrl } from '../entities/ng-url';
@@ -26,11 +25,11 @@ export class NgUrlsController {
    * 登録する
    * 
    * @param ngUrl 登録する内容
-   * @return 登録結果
+   * @return 登録後のエンティティ
    */
   @UseGuards(JwtAuthGuard)
   @Post()
-  public async create(@Body() ngUrl: NgUrl): Promise<InsertResult> {
+  public async create(@Body() ngUrl: NgUrl): Promise<NgUrl> {
     return await this.ngUrlsService.create(ngUrl);
   }
 }

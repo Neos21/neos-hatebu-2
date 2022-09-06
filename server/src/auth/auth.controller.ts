@@ -17,6 +17,7 @@ export class AuthController {
    * `LocalAuthGuard` → `LocalStrategy#validate()` (自動検知) にてパスワード認証する
    * 認証成功時は `{ userName: string; }` が返され、メソッド中の `req.user` で参照できるので
    * コレを Payload として `JwtService#sign()` の引数に設定して JWT アクセストークンを発行する
+   * 本メソッドの中身は認証成功時のみ実行される
    * 
    * @param req リクエスト
    * @return ログイン成功時に JWT アクセストークンを返す

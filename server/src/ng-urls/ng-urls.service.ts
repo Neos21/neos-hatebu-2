@@ -24,10 +24,16 @@ export class NgUrlsService {
    * 登録する
    * 
    * @param ngUrl 登録する内容
-   * @return 登録結果
+   * @return 登録後のエンティティ
    */
-  public async create(ngUrl: NgUrl): Promise<InsertResult> {
-    return await this.ngUrlsRepository.insert(ngUrl);
+  public async create(ngUrl: NgUrl): Promise<NgUrl> {
+    const insertResult = await this.ngUrlsRepository.insert(ngUrl);
+    const id: number = insertResult.identifiers?.[0]?.id;  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+    if(id == null) {
+      this.logger.error('#create() : Something Wrong', insertResult);
+      throw new Error('Failed To Insert NgUrl');
+    }
+    return this.ngUrlsRepository.findOneByOrFail({ id: id });
   }
   
   
@@ -40,16 +46,13 @@ export class NgUrlsService {
    * `created_at` カラムは ISO8601 表記の UTC `YYYY-MM-DDTHH:mm:SS.sssZ` で記録されているため
    * 削除条件とする日時情報は UTC で計算することになる
    * 大まかに過去データが削除できればよく厳密さは求めないので、適当に1週間程度以前のデータを削除する
-   * 
-   * @return 削除結果
    */
-  public async removeByCreatedAt(): Promise<DeleteResult> {
+  public async removeByCreatedAt(): Promise<void> {
     const now = new Date();
     const minusDates = 7;  // 現在日から何日前以前のデータを削除するか
     const targetDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - minusDates, 0, 0, 0, 0));  // マイナス値等は適切に処理してくれる
     this.logger.log(`#removeByCreatedAt() : Target Date [${targetDate.toISOString()}]`);
     const deleteResult = await this.ngUrlsRepository.delete({ createdAt: LessThanOrEqual(targetDate) });
     this.logger.log(`#removeByCreatedAt() : Removed Rows [${deleteResult.affected}]`);  // eslint-disable-line @typescript-eslint/restrict-template-expressions
-    return deleteResult;
   }
 }

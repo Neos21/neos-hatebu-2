@@ -1,3 +1,11 @@
 <p>{{ title }} app is running!</p>
+<ul>
+  <li><button type="button" [routerLink]="['/login'     ]" [routerLinkActive]="'active'">Login</button></li>
+  <li><button type="button" [routerLink]="['/home'      ]" [routerLinkActive]="'active'">Home</button></li>
+  <li><button type="button" [routerLink]="['/ng-urls'   ]" [routerLinkActive]="'active'">Ng URLs</button></li>
+  <li><button type="button" [routerLink]="['/ng-words'  ]" [routerLinkActive]="'active'">NG Words</button></li>
+  <li><button type="button" [routerLink]="['/ng-domains']" [routerLinkActive]="'active'">NG Domains</button></li>
+</ul>
+<hr>
 
 <router-outlet></router-outlet>

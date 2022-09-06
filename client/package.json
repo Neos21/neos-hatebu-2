@@ -9,6 +9,7 @@
     
     "// Development": "echo 'Development : Before executing this, Publish WSL IP ----------------'",
     "start": "ng serve",
+    "dev"  : "ng serve",
     "lint" : "ng lint",
     
     "// Commands": "echo 'Dependencies And DevDependencies Commands -----------------------------'",
