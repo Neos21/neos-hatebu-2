@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { BehaviorSubject } from 'rxjs';
 
 /** 共有データ管理サービス */

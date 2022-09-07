@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { BehaviorSubject, map } from 'rxjs';
@@ -13,18 +13,17 @@ import { NgDomain } from '../shared/classes/ng-domain';
   templateUrl: './ng-domains.component.html',
   styleUrls: ['./ng-domains.component.css']
 })
-export class NgDomainsComponent implements OnInit {
-  /** 追加欄 */
+export class NgDomainsComponent implements OnInit, OnDestroy {
+  /** 登録欄 */
   public form!: FormGroup;
   /** 画面データの状態管理オブジェクト */
-  private dataState$ = new BehaviorSubject<{ error?: Error | any }>({
-                                             error : null });
+  private readonly dataState$ = new BehaviorSubject<{ isLoading?: boolean; error?: Error | string | any }>({ isLoading: true });
   /** ローディング中か否か */
-  public readonly isLoading$ = this.dataState$.pipe(map(dataState => this.ngDomains$ == null && dataState.error == null));
-  /** NG ドメイン一覧 */
-  public readonly ngDomains$ = this.ngDataService.ngDomains$;
+  public readonly isLoading$ = this.dataState$.pipe(map(dataState => dataState.isLoading));
   /** エラー */
   public readonly error$     = this.dataState$.pipe(map(dataState => dataState.error));
+  /** NG ドメイン一覧 */
+  public readonly ngDomains$ = this.ngDataService.ngDomains$;
   
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -40,22 +39,33 @@ export class NgDomainsComponent implements OnInit {
     });
     
     try {
-      await this.ngDataService.findNgDomains(true);  // 強制再読込する
+      await this.ngDataService.findNgDomains();
+      this.dataState$.next({ isLoading: false });
     }
     catch(error) {
-      console.error('NgDomainsComponent#fetchAll() : Failed', error);
-      this.dataState$.next({ error });
+      console.error('NgDomainsComponent#ngOnInit() : Failed', error);
+      this.dataState$.next({ isLoading: false, error });
     }
   }
   
+  /** コンポーネント破棄時 */
+  public ngOnDestroy(): void {
+    this.dataState$.unsubscribe();
+  }
+  
+  /** 登録する */
   public async create(): Promise<void> {
     try {
+      this.dataState$.next({});  // Clear Error
+      
       // プロトコル部分があれば除去しておく
       const domain = `${this.form.value.domain}`.trim().replace(/^https?:\/\//, '');
-      if(this.ngDomains$.getValue().some(ngDomain => ngDomain.domain === domain)) {
+      
+      if(this.ngDomains$.getValue()!.some(ngDomain => ngDomain.domain === domain)) {
         this.dataState$.next({ error: `${domain} は登録済です。` });
         return this.form.reset();
       }
+      
       await this.ngDataService.createNgDomain(new NgDomain({ domain }));
       this.form.reset();
     }
@@ -64,8 +74,14 @@ export class NgDomainsComponent implements OnInit {
     }
   }
   
+  /**
+   * 削除する
+   * 
+   * @param id 削除する ID
+   */
   public async remove(id: number): Promise<void> {
     try {
+      this.dataState$.next({});  // Clear Error
       await this.ngDataService.removeNgDomain(id);
     }
     catch(error) {

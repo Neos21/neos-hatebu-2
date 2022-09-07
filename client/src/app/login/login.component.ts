@@ -13,26 +13,25 @@ import { SharedStateService } from '../shared/services/shared-state.service';
 })
 export class LoginComponent implements OnInit {
   /** ログインフォーム */
-  public loginForm!: FormGroup;
+  public form!: FormGroup;
   /** エラー */
-  public error: string = '';
+  public error?: string;
   
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly authService: AuthService,
-    private readonly sharedStateService: SharedStateService) { }
+    private readonly sharedStateService: SharedStateService
+  ) { }
 
-  /** 画面初期表示時の処理 */
+  /** 画面初期表示時 */
   public ngOnInit(): void {
-    this.loginForm = this.formBuilder.group({
+    this.form = this.formBuilder.group({
       userName: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
     this.sharedStateService.setPageTitle('Login');
     
-    // TODO : //this.pageDataService.pageTitleSubject.next(`Neo's Hatebu`);  // ページタイトルを設定する
-    console.log('LoginComponent#ngOnInit() : Reset auth info by AuthService#logout()');
     this.authService.logout();  // ログイン画面に遷移した時はログイン情報を削除しておく
     
     // TODO : 初期表示時に表示するフィードバックメッセージがあれば表示する
@@ -41,16 +40,14 @@ export class LoginComponent implements OnInit {
     //if(initMessage) this.message = initMessage;
   }
   
-  /** 「Login」ボタン押下時の処理 */
-  public async onLogin(): Promise<void> {
-    this.error = '';
+  /** 「Login」ボタン押下時 */
+  public async login(): Promise<void> {
+    this.error = undefined;
     try {
-      await this.authService.login(this.loginForm.value.userName, this.loginForm.value.password);
-      console.log('LoginComponent#onLogin() : Succeeded');
+      await this.authService.login(this.form.value.userName, this.form.value.password);
       this.router.navigate(['/home']);  // カテゴリ ID は `HomeComponent` 側で設定させる
     }
     catch(error) {
-      console.error('LoginComponent#onLogin() : Failed', error);
       this.error = `ログイン失敗 : ${JSON.stringify(error)}`;
     }
   }

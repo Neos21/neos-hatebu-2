@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { Category } from '../classes/category';
@@ -10,46 +10,32 @@ import { Category } from '../classes/category';
 @Injectable({ providedIn: 'root' })
 export class CategoriesService {
   /** カテゴリ一覧のキャッシュ */
-  public categories: Array<Category> = [];
+  public readonly categories$ = new BehaviorSubject<Array<Category> | null>(null);
   
   constructor(private readonly httpClient: HttpClient) { }
   
   /**
    * カテゴリ一覧を取得する
    * 
-   * @return カテゴリ一覧
+   * @return カテゴリ一覧とそれぞれに紐付く記事一覧
    */
   public async findAll(): Promise<Array<Category>> {
-    if(this.categories.length === 0) {  // キャッシュがなければ取得してキャッシュする
-      this.categories = await firstValueFrom(this.httpClient.get<Array<Category>>(`${environment.serverUrl}/api/categories`));
+    if(this.categories$.getValue() == null) {  // キャッシュがなければ取得してキャッシュする
+      const categories = await firstValueFrom(this.httpClient.get<Array<Category>>(`${environment.serverUrl}/api/categories`));
+      this.categories$.next(categories);
     }
-    return this.categories;
+    return this.categories$.getValue()!;
   }
   
   /**
-   * 対象カテゴリの記事一覧を取得する
-   * 
-   * @param id カテゴリ ID
-   * @return 指定のカテゴリ情報と記事一覧
-   */
-  public async findById(id: number): Promise<Category> {
-    const targetIndex = this.categories.findIndex((category) => category.id === id);
-    if(targetIndex < 0) throw new Error('The category does not exist');  // カテゴリ一覧から指定のカテゴリ ID が見つからなかった
-    // キャッシュがなければ取得してキャッシュする
-    if(this.categories[targetIndex].entries == null || this.categories[targetIndex].entries.length === 0) {
-      this.categories[targetIndex] = await firstValueFrom(this.httpClient.get<Category>(`${environment.serverUrl}/api/categories/${id}`));
-    }
-    return this.categories[targetIndex];
-  }
-  
-  /**
-   * 全カテゴリの記事一覧を再スクレイピングしてカテゴリ一覧を再取得する (配下の記事一覧も消えるので必要な場合は別途取得する)
+   * 全カテゴリの記事一覧を再スクレイピングしてカテゴリ一覧を再取得する
    * 
    * @return カテゴリ一覧
    */
   public async reloadAll(): Promise<Array<Category>> {
-    this.categories = await firstValueFrom(this.httpClient.post<Array<Category>>(`${environment.serverUrl}/api/categories`, {}));
-    return this.categories;
+    const categories = await firstValueFrom(this.httpClient.post<Array<Category>>(`${environment.serverUrl}/api/categories`, {}));
+    this.categories$.next(categories);
+    return this.categories$.getValue()!;
   }
   
   /**
@@ -59,9 +45,12 @@ export class CategoriesService {
    * @return 指定のカテゴリ情報と記事一覧
    */
   public async reloadById(id: number): Promise<Category> {
-    const targetIndex = this.categories.findIndex((category) => category.id === id);
-    if(targetIndex < 0) throw new Error('The category does not exist');  // カテゴリ一覧から指定のカテゴリ ID が見つからなかった
-    this.categories[targetIndex] = await firstValueFrom(this.httpClient.post<Category>(`${environment.serverUrl}/api/categories/${id}`, {}));
-    return this.categories[targetIndex];
+    const categories = this.categories$.getValue()!;
+    const targetIndex = categories.findIndex(category => category.id === id);
+    if(targetIndex < 0) throw new Error('The category does not exist');
+    const category = await firstValueFrom(this.httpClient.post<Category>(`${environment.serverUrl}/api/categories/${id}`, {}));
+    categories[targetIndex] = category;
+    this.categories$.next(categories);
+    return category;
   }
 }

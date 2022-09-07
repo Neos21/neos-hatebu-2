@@ -4,6 +4,8 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
+import { CategoriesService } from './categories.service';
+import { NgDataService } from './ng-data.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -11,11 +13,17 @@ export class AuthService {
   public isLogined = false;
   /** JWT アクセストークン : LocalStorage からのインメモリキャッシュ */
   public accessToken = '';
+  /** 自動再ログイン中か否か */
+  public isReLogining = false;
   
   /** ユーザ名・パスワード・JWT アクセストークンを保存する LocalStorage キー名 */
   private readonly authInfoStorageKey = 'auth_info';
   
-  constructor(private readonly httpClient: HttpClient) { }
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly categoriesService: CategoriesService,
+    private readonly ngDataService: NgDataService
+  ) { }
   
   /**
    * ログインする
@@ -26,9 +34,16 @@ export class AuthService {
   public async login(userName: string, password: string): Promise<void> {
     try {
       const { accessToken } = await firstValueFrom(this.httpClient.post<{ accessToken: string }>(`${environment.serverUrl}/api/auth/login`, { userName, password }));
-      this.isLogined = true;
       window.localStorage.setItem(this.authInfoStorageKey, JSON.stringify({ userName, password, accessToken }));
       this.accessToken = accessToken;
+      
+      // ログイン成功時は必要なデータを初期ロードする
+      const results = await Promise.all([
+        this.categoriesService.findAll(),
+        this.ngDataService.findAll()
+      ]);
+      this.isLogined = true;
+      console.log('AuthService#login() : Succeeded', results);
     }
     catch(error) {
       console.warn('AuthService#login() : Failed', { userName, password }, error);
@@ -39,12 +54,21 @@ export class AuthService {
   
   /** LocalStorage の情報を基に自動再ログインする */
   public async reLogin(): Promise<void> {
-    const authInfo = window.localStorage.getItem(this.authInfoStorageKey);
-    if(authInfo == null) throw new Error('Auth info does not exist');
-    const { userName, password } = JSON.parse(authInfo);
-    await this.login(userName, password);
-    // TODO : 通信エラー時に「自動再ログイン失敗」のメッセージを表示する
-    // sessionStorage.setItem(appConstants.sessionStorage.loginInitMessageKey, `自動再ログイン失敗 : ${JSON.stringify(error)}`);
+    this.isReLogining = true;
+    try {
+      const authInfo = window.localStorage.getItem(this.authInfoStorageKey);
+      if(authInfo == null) throw new Error('Auth info does not exist');
+      const { userName, password } = JSON.parse(authInfo);
+      await this.login(userName, password);
+    }
+    catch(error) {
+      // TODO : 通信エラー時に「自動再ログイン失敗」のメッセージを表示する
+      // sessionStorage.setItem(appConstants.sessionStorage.loginInitMessageKey, `自動再ログイン失敗 : ${JSON.stringify(error)}`);
+      throw error;
+    }
+    finally {
+      this.isReLogining = false;
+    }
   }
   
   /** ログアウトする */

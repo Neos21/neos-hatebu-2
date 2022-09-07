@@ -1,1 +1,17 @@
-<p>ng-words works!</p>
+<app-loading *ngIf="isLoading$ | async"></app-loading>
+<app-error *ngIf="error$ | async as error" [error]="error"></app-error>
+
+<ng-container *ngIf="(isLoading$ | async) !== true && (ngWords$ | async) as ngWords">
+  <form [formGroup]="form" (ngSubmit)="create()">
+    <input type="text" formControlName="word" placeholder="NG ワードを追加">
+    <button type="submit" [disabled]="form.invalid">登録</button>
+  </form>
+  
+  <app-warning *ngIf="ngWords.length === 0" [message]="'表示できる情報はありません。'"></app-warning>
+  <ol *ngIf="ngWords.length">
+    <li *ngFor="let ngWord of ngWords">
+      <button type="button" (click)="remove(ngWord.id)">削除</button>
+      {{ ngWord.word }}
+    </li>
+  </ol>
+</ng-container>

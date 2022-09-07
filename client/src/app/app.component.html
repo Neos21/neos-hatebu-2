@@ -1,11 +1,38 @@
-<h1>{{ (sharedStateService.pageTitle$ | async) || 'Neo\'s Hatebu' }}</h1>
-<ul>
-  <li><button type="button" [routerLink]="['/login'     ]" [routerLinkActive]="'active'">Login</button></li>
-  <li><button type="button" [routerLink]="['/home'      ]" [routerLinkActive]="'active'">Home</button></li>
-  <li><button type="button" [routerLink]="['/ng-urls'   ]" [routerLinkActive]="'active'">Ng URLs</button></li>
-  <li><button type="button" [routerLink]="['/ng-words'  ]" [routerLinkActive]="'active'">NG Words</button></li>
-  <li><button type="button" [routerLink]="['/ng-domains']" [routerLinkActive]="'active'">NG Domains</button></li>
-</ul>
-<hr>
-
-<router-outlet></router-outlet>
+<div class="app">
+  <div class="header">{{ (sharedStateService.pageTitle$ | async) || 'Neo\'s Hatebu' }}</div>
+  <div class="menu">
+    <ng-container *ngIf="authService.isReLogining">
+      <ul>
+        <li>(自動再ログイン中…)</li>
+        <li><button type="button" [routerLink]="['/login']">ログイン</button></li>
+        <li><button type="button" onclick="window.open('https://b.hatena.ne.jp/', '_blank')">はてなブックマーク</button></li>
+      </ul>
+    </ng-container>
+    <ng-container *ngIf="!authService.isReLogining && !authService.isLogined">
+      <ul>
+        <li><button type="button" [routerLink]="['/login']">ログインしてください</button></li>
+        <li><button type="button" onclick="window.open('https://b.hatena.ne.jp/', '_blank')">はてなブックマーク</button></li>
+      </ul>
+    </ng-container>
+    <ng-container *ngIf="!authService.isReLogining && authService.isLogined">
+      <ng-container *ngIf="categoriesService.categories$ | async as categories">
+        <ul *ngIf="categories.length !== 0">
+          <li *ngFor="let category of categories">
+            <button type="button" [routerLink]="['/home']" [queryParams]="{ category_id: category.id }">{{ category.name }}</button>
+          </li>
+        </ul>
+      </ng-container>
+      <ul>
+        <li><button type="button" [routerLink]="['/ng-urls']">NG URL 確認</button></li>
+        <li><button type="button" [routerLink]="['/ng-words']">NG ワード管理</button></li>
+        <li><button type="button" [routerLink]="['/ng-domains']">NG ドメイン管理</button></li>
+        <li><button type="button" (click)="reloadAll()">全更新</button></li>
+        <li><button type="button" onclick="window.open('https://b.hatena.ne.jp/', '_blank')">はてなブックマーク</button></li>
+        <li><button type="button" (click)="logout()">ログアウト</button></li>
+      </ul>
+    </ng-container>
+  </div>
+  <div class="main">
+    <router-outlet></router-outlet>
+  </div>
+</div>

@@ -4,7 +4,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { LoadingComponent } from './components/loading/loading.component';
+import { WarningComponent } from './components/warning/warning.component';
 import { ErrorComponent } from './components/error/error.component';
+
 import { HatebuUrlPipe } from './pipes/hatebu-url.pipe';
 
 @NgModule({
@@ -17,9 +19,11 @@ import { HatebuUrlPipe } from './pipes/hatebu-url.pipe';
   declarations: [
     // Components
     LoadingComponent,
+    WarningComponent,
     ErrorComponent,
     // Pipes
-    HatebuUrlPipe
+    HatebuUrlPipe,
+    WarningComponent
   ],
   exports: [
     // Re-Export
@@ -29,6 +33,7 @@ import { HatebuUrlPipe } from './pipes/hatebu-url.pipe';
     HttpClientModule,
     // Common
     LoadingComponent,
+    WarningComponent,
     ErrorComponent
   ]
 })

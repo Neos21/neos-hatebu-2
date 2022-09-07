@@ -1,0 +1,24 @@
+.app {
+  min-height: 100%;
+  
+  --menu-width: 270px;
+}
+
+.header {
+  padding-left: calc(var(--menu-width) + 1rem);
+  background: #fcc;  /* TODO */
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--menu-width);
+  height: 100%;
+  overflow-y: auto;
+  background: #cff;  /* TODO */
+}
+
+.main {
+  padding-left: calc(var(--menu-width) + 1rem);
+}

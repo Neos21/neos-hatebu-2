@@ -30,26 +30,15 @@ export class CategoriesController {
    * 
    * @return 取得結果
    */
-   @UseGuards(JwtAuthGuard)
-   @Post()
-   public async scrapeAll(): Promise<Array<Category>> {
-     await this.entriesService.scrapeAllEntries();
-     return await this.categoriesService.findAll();
-   }
-   
-  /**
-   * 指定の ID のカテゴリととそれに紐付く記事一覧を取得する
-   * 
-   * @return 取得結果
-   */
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  public async findById(@Param('id') id: number): Promise<Category> {
-    return await this.categoriesService.findById(id);
+  @Post()
+  public async scrapeAll(): Promise<Array<Category>> {
+    await this.entriesService.scrapeAllEntries();
+    return await this.categoriesService.findAll();
   }
   
   /**
-   * 指定の ID のカテゴリについてスクレイピングして更新し、再度指定の ID のカテゴリととそれに紐付く記事一覧を取得する
+   * 指定の ID のカテゴリについてスクレイピングして更新し、再度指定の ID のカテゴリとそれに紐付く記事一覧を取得する
    * 
    * @param id ID
    * @return 取得結果

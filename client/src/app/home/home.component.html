@@ -1,12 +1,21 @@
-<h1>Home</h1>
-
 <app-loading *ngIf="isLoading$ | async"></app-loading>
 <app-error *ngIf="error$ | async as error" [error]="error"></app-error>
 
-<p>
-  <button type="button" (click)="testLoadCategory(2)" [disabled]="isLoading$ | async">2</button>
-  <button type="button" (click)="testCauseError()">Err</button>
-</p>
-<div *ngIf="category$ | async as category">
-  <div>{{ category | json }}</div>
-</div>
+<ng-container *ngIf="(isLoading$ | async) !== true && category">
+  <div>{{ category.name }} : {{ category.updatedAt }} </div>
+  
+  <app-warning *ngIf="category.entries == null || category.entries.length === 0" [message]="'表示できる記事はありません。'"></app-warning>
+  <ol *ngIf="category.entries != null && category.entries.length">
+    <li *ngFor="let entry of category.entries">
+      {{ entry | json }}
+    </li>
+  </ol>
+  
+  <div>
+    <button type="button" (click)="moveNext()">次へ</button>
+    <button type="button" (click)="movePrev()">前へ</button>
+  </div>
+  <div>
+    <button type="button" (click)="reload()">更新</button>
+  </div>
+</ng-container>
