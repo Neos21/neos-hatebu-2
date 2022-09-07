@@ -1,23 +1,23 @@
 /** NG URL */
 export class NgUrl {
   /** ID */
-  public id: number;
+  public readonly id!: number;
   /** 記事タイトル */
-  public title: string;
+  public title!: string;
   /** 記事 URL */
-  public url: string;
+  public url!: string;
   /** 記事本文抜粋 */
-  public description: string;
+  public description!: string;
   /** ブクマ数 */
-  public count: string;
+  public count!: string;
   /** 日時 */
-  public date: string;
+  public date!: string;
   /** Favicon URL */
-  public faviconUrl: string;
+  public faviconUrl!: string;
   /** サムネイル URL */
-  public thumbnailUrl: string;
+  public thumbnailUrl!: string;
   /** 登録日時 */
-  public createdAt: string;
+  public readonly createdAt!: string;
   
   constructor(partial: Partial<NgUrl>) {
     Object.assign(this, partial);

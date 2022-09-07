@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { DeleteResult, InsertResult, LessThanOrEqual, Repository } from 'typeorm';
+import { LessThanOrEqual, Repository } from 'typeorm';
 
 import { NgUrl } from '../entities/ng-url';
 
@@ -30,10 +30,10 @@ export class NgUrlsService {
     const insertResult = await this.ngUrlsRepository.insert(ngUrl);
     const id: number = insertResult.identifiers?.[0]?.id;  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
     if(id == null) {
-      this.logger.error('#create() : Something Wrong', insertResult);
-      throw new Error('Failed To Insert NgUrl');
+      this.logger.error('#create() : Failed', insertResult);
+      throw new Error('Failed to insert NgUrl');
     }
-    return this.ngUrlsRepository.findOneByOrFail({ id: id });
+    return this.ngUrlsRepository.findOneByOrFail({ id });
   }
   
   
@@ -51,8 +51,8 @@ export class NgUrlsService {
     const now = new Date();
     const minusDates = 7;  // 現在日から何日前以前のデータを削除するか
     const targetDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - minusDates, 0, 0, 0, 0));  // マイナス値等は適切に処理してくれる
-    this.logger.log(`#removeByCreatedAt() : Target Date [${targetDate.toISOString()}]`);
+    this.logger.log(`#removeByCreatedAt() : Target date [${targetDate.toISOString()}]`);
     const deleteResult = await this.ngUrlsRepository.delete({ createdAt: LessThanOrEqual(targetDate) });
-    this.logger.log(`#removeByCreatedAt() : Removed Rows [${deleteResult.affected}]`);  // eslint-disable-line @typescript-eslint/restrict-template-expressions
+    this.logger.log(`#removeByCreatedAt() : Removed rows [${deleteResult.affected}]`);  // eslint-disable-line @typescript-eslint/restrict-template-expressions
   }
 }

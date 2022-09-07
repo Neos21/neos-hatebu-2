@@ -15,11 +15,11 @@ export class CategoriesService implements OnModuleInit {
   public async onModuleInit(): Promise<void> {
     const countAll = await this.countAll();
     if(countAll === 0) {
-      this.logger.warn('#onModuleInit() : Create Categories For First Time');
+      this.logger.warn('#onModuleInit() : Create categories for first time');
       await this.createCategories();
     }
     else {
-      this.logger.log('#onModuleInit() : Categories Are Already Exist. Do Nothing');
+      this.logger.log('#onModuleInit() : Categories are already exist. Do nothing');
     }
   }
   
@@ -43,8 +43,8 @@ export class CategoriesService implements OnModuleInit {
    */
   public async findById(id: number): Promise<Category> {
     return await this.categoriesRepository.findOneOrFail({
-      where: { id: id },  // ID 指定
-      relations: { entries: true }  // 紐付く記事一覧を取得する
+      relations: { entries: true },  // 紐付く記事一覧を取得する
+      where: { id }  // ID 指定
     });
   }
   
@@ -68,7 +68,7 @@ export class CategoriesService implements OnModuleInit {
    * @return レコード件数
    */
   private async countAll(): Promise<number> {
-    return this.categoriesRepository.count();
+    return await this.categoriesRepository.count();
   }
   
   /** 初期データとしてカテゴリマスタを登録する */

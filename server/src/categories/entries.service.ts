@@ -39,21 +39,21 @@ export class EntriesService {
    */
   public async scrapeEntries(categoryId: number, pageUrl?: string): Promise<void> {
     await this.dataSource.transaction(async () => {
-      this.logger.log(`#scrapeEntries() : Transaction Start : [${categoryId}] ${pageUrl ?? 'Unknown'}`);
+      this.logger.log(`#scrapeEntries() : Transaction start : [${categoryId}] ${pageUrl ?? 'Unknown'}`);
       // 引数でページ URL が渡されていない場合は取得する
       if(pageUrl == null) {
         const category = await this.categoriesService.findById(categoryId);
         pageUrl = category.pageUrl;
-        this.logger.log(`#scrapeEntries() :   Get Page URL : [${categoryId}] ${pageUrl}`);
+        this.logger.log(`#scrapeEntries() :   Get page URL : [${categoryId}] ${pageUrl}`);
       }
       
-      const html    = await this.crawlPage(pageUrl);             // クロールする
-      const $       = this.convertHtmlToJQueryLikeObject(html);  // jQuery ライクに変換する
-      const entries = this.transformToEntries(categoryId, $);    // 抽出する
-      await this.bulkRemove(categoryId);                         // 先に一括削除する
-      await this.bulkCreate(entries);                            // 一括登録する
-      await this.categoriesService.updateUpdatedAt(categoryId);  // カテゴリの最終クロール日時も更新する
-      this.logger.log(`#scrapeEntries() : Transaction End : [${categoryId}] ${pageUrl}`);
+      const html          = await this.crawlPage(pageUrl);           // クロールする
+      const $: CheerioAPI = load(html);                              // jQuery ライクに変換する
+      const entries       = this.transformToEntries(categoryId, $);  // 抽出する
+      await this.entriesRepository.delete({ categoryId });           // 先に一括削除する
+      await this.entriesRepository.insert(entries);                  // 一括登録する
+      await this.categoriesService.updateUpdatedAt(categoryId);      // カテゴリの最終クロール日時も更新する
+      this.logger.log(`#scrapeEntries() : Transaction end : [${categoryId}] ${pageUrl}`);
     });
   }
   
@@ -71,16 +71,6 @@ export class EntriesService {
     });
     const responseText: string = await response.text();
     return responseText;
-  }
-  
-  /**
-   * HTML テキストを jQuery ライクなオブジェクトに変換する (Cheerio を使用する)
-   * 
-   * @param html HTML テキスト
-   * @return jQuery ライクオブジェクト
-   */
-  private convertHtmlToJQueryLikeObject(html: string): CheerioAPI {
-    return load(html);
   }
   
   /**
@@ -108,23 +98,5 @@ export class EntriesService {
       entries.push(new Entry({ categoryId, title, url, description, count, date, faviconUrl, thumbnailUrl }));
     });
     return entries;
-  }
-  
-  /**
-   * 一括登録する
-   * 
-   * @param entries 記事の配列
-   */
-  private async bulkCreate(entries: Array<Entry>): Promise<void> {
-    await this.entriesRepository.insert(entries);
-  }
-  
-  /**
-   * 一括削除する
-   * 
-   * @param categoryId 削除するカテゴリ ID
-   */
-  private async bulkRemove(categoryId: number): Promise<void> {
-    await this.entriesRepository.delete({ categoryId: categoryId });
   }
 }

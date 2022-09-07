@@ -17,7 +17,7 @@ async function bootstrap(): Promise<void> {
   app.enableCors({  // CORS を有効にする : https://github.com/expressjs/cors#configuration-options
     origin: (/localhost/),  // `localhost` を全て許可するため正規表現を使っている
     methods: 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD',
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Credentials',
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Headers, Access-Control-Allow-Credentials',
     credentials: true  // `Access-Control-Allow-Credentials` を許可する
   });
   const port = app.get<ConfigService>(ConfigService).get<number>('port')!;  // eslint-disable-line @typescript-eslint/no-non-null-assertion
@@ -47,7 +47,7 @@ async function bootstrap(): Promise<void> {
     .join(', ');
   
   // 起動ログ
-  logger.log(cyan(`Server Started At Port [`) + yellow(`${port}`) + cyan(']'));
+  logger.log(cyan(`Server started at port [`) + yellow(`${port}`) + cyan(']'));
   logger.log(`${yellow('Routes :')}\n` + endpoints.map((endpoint) => `    - ${endpoint.path.padEnd(longestPathLength, ' ')} : ${prepareMethods(endpoint.methods)}`).sort().join('\n'));
 }
 void bootstrap(); // 意図的に `await` しないことを示す `void` : https://github.com/typescript-eslint/typescript-eslint/blob/v5.36.0/packages/eslint-plugin/docs/rules/no-floating-promises.md#ignorevoid

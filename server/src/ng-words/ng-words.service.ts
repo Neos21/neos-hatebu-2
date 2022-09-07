@@ -30,10 +30,10 @@ export class NgWordsService {
     const insertResult = await this.ngWordsRepository.insert(ngWord);
     const id: number = insertResult.identifiers?.[0]?.id;  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
     if(id == null) {
-      this.logger.error('#create() : Something Wrong', insertResult);
-      throw new Error('Failed To Insert NgWord');
+      this.logger.error('#create() : Failed', insertResult);
+      throw new Error('Failed to insert NgWord');
     }
-    return this.ngWordsRepository.findOneByOrFail({ id: id });
+    return this.ngWordsRepository.findOneByOrFail({ id });
   }
   
   /**

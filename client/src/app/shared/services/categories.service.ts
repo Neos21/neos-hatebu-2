@@ -34,9 +34,9 @@ export class CategoriesService {
    */
   public async findById(id: number): Promise<Category> {
     const targetIndex = this.categories.findIndex((category) => category.id === id);
-    if(targetIndex < 0) throw new Error('Category not found');  // カテゴリ一覧から指定のカテゴリ ID が見つからなかった
+    if(targetIndex < 0) throw new Error('The category does not exist');  // カテゴリ一覧から指定のカテゴリ ID が見つからなかった
     // キャッシュがなければ取得してキャッシュする
-    if(this.categories[targetIndex].entries == null || this.categories[targetIndex].entries.length !== 0) {
+    if(this.categories[targetIndex].entries == null || this.categories[targetIndex].entries.length === 0) {
       this.categories[targetIndex] = await firstValueFrom(this.httpClient.get<Category>(`${environment.serverUrl}/api/categories/${id}`));
     }
     return this.categories[targetIndex];
@@ -60,7 +60,7 @@ export class CategoriesService {
    */
   public async reloadById(id: number): Promise<Category> {
     const targetIndex = this.categories.findIndex((category) => category.id === id);
-    if(targetIndex < 0) throw new Error('Category not found');  // カテゴリ一覧から指定のカテゴリ ID が見つからなかった
+    if(targetIndex < 0) throw new Error('The category does not exist');  // カテゴリ一覧から指定のカテゴリ ID が見つからなかった
     this.categories[targetIndex] = await firstValueFrom(this.httpClient.post<Category>(`${environment.serverUrl}/api/categories/${id}`, {}));
     return this.categories[targetIndex];
   }

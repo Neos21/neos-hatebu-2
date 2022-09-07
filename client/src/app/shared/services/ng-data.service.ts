@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import { NgUrl } from '../classes/ng-url';
@@ -12,29 +12,21 @@ import { NgDomain } from '../classes/ng-domain';
 @Injectable({ providedIn: 'root' })
 export class NgDataService {
   /** NG URL のキャッシュ */
-  public ngUrls   : Array<NgUrl   > = [];
+  public readonly ngUrls$ = new BehaviorSubject<Array<NgUrl>>([]);
   /** NG ワードのキャッシュ */
-  public ngWords  : Array<NgWord  > = [];
+  public readonly ngWords$ = new BehaviorSubject<Array<NgWord>>([]);
   /** NG ドメインのキャッシュ */
-  public ngDomains: Array<NgDomain> = [];
+  public readonly ngDomains$ = new BehaviorSubject<Array<NgDomain>>([]);
   
   constructor(private readonly httpClient: HttpClient) { }
   
-  /**
-   * NG 情報をまとめて取得する : 全て強制再取得する
-   * 
-   * @return NG URL・NG ワード・NG ドメインの一覧
-   */
-  public async findAll(): Promise<{ ngUrls: Array<NgUrl>; ngWords: Array<NgWord>; ngDomains: Array<NgDomain> }> {
-    const [ngUrls, ngWords, ngDomains] = await Promise.all([
+  /** NG 情報をまとめて取得する : 全て強制再取得する */
+  public async findAll(): Promise<void> {
+    await Promise.all([
       this.findNgUrls(true),
       this.findNgWords(true),
       this.findNgDomains(true)
     ]);
-    this.ngUrls    = ngUrls;
-    this.ngWords   = ngWords;
-    this.ngDomains = ngDomains;
-    return { ngUrls, ngWords, ngDomains };
   }
   
   
@@ -48,10 +40,11 @@ export class NgDataService {
    * @return NG URL 一覧
    */
   public async findNgUrls(isForceGet?: boolean): Promise<Array<NgUrl>> {
-    if(isForceGet || this.ngUrls.length === 0) {  // 強制再取得モードかキャッシュがなければ取得する
-      this.ngUrls = await firstValueFrom(this.httpClient.get<Array<NgUrl>>(`${environment.serverUrl}/api/ng-urls`));
+    if(isForceGet || this.ngUrls$.getValue().length === 0) {  // 強制再取得モードかキャッシュがなければ取得する
+      const ngUrls = await firstValueFrom(this.httpClient.get<Array<NgUrl>>(`${environment.serverUrl}/api/ng-urls`));
+      this.ngUrls$.next(ngUrls);
     }
-    return this.ngUrls;
+    return this.ngUrls$.getValue();
   }
   
   /**
@@ -63,6 +56,7 @@ export class NgDataService {
     try {
       const result = await firstValueFrom(this.httpClient.post(`${environment.serverUrl}/api/ng-urls`, ngUrl));
       console.log('NgDataService#createNgUrl() : Succeeded', result);
+      // TODO : 登録後のエンティティをキャッシュに追加する
     }
     catch(error) {
       console.warn('NgDataService#createNgUrl() : Failed', error);  // エラーは伝搬させない
@@ -80,10 +74,11 @@ export class NgDataService {
    * @return NG ワード一覧
    */
   public async findNgWords(isForceGet?: boolean): Promise<Array<NgWord>> {
-    if(isForceGet || this.ngWords.length === 0) {  // 強制再取得モードかキャッシュがなければ取得する
-      this.ngWords = await firstValueFrom(this.httpClient.get<Array<NgWord>>(`${environment.serverUrl}/api/ng-words`));
+    if(isForceGet || this.ngWords$.getValue().length === 0) {  // 強制再取得モードかキャッシュがなければ取得する
+      const ngWords = await firstValueFrom(this.httpClient.get<Array<NgWord>>(`${environment.serverUrl}/api/ng-words`));
+      this.ngWords$.next(ngWords);
     }
-    return this.ngWords;
+    return this.ngWords$.getValue();
   }
   
   /**
@@ -93,9 +88,10 @@ export class NgDataService {
    */
   public async createNgWord(ngWord: NgWord): Promise<void> {
     const createdNgWord = await firstValueFrom(this.httpClient.post<NgWord>(`${environment.serverUrl}/api/ng-words`, ngWord));
-    console.log('NgDataService#createNgWord() : Succeeded', createdNgWord);
-    // 参照渡しで利用している画面側に反映されるよう配列操作する
-    this.ngWords.push(createdNgWord);
+    // 登録後のエンティティをキャッシュに追加する
+    const ngWords = this.ngWords$.getValue();
+    ngWords.push(createdNgWord);
+    this.ngWords$.next(ngWords);
   }
   
   /**
@@ -104,13 +100,13 @@ export class NgDataService {
    * @param ngWordId 削除対象の NG ワード ID
    */
   public async removeNgWord(ngWordId: number): Promise<void> {
-    const removedIndex = this.ngWords.findIndex((ngWord) => ngWord.id === ngWordId);
-    if(removedIndex < 0) throw new Error('Invalid NgWord ID');
-    
+    const removedIndex = this.ngWords$.getValue().findIndex(ngWord => ngWord.id === ngWordId);
+    if(removedIndex < 0) throw new Error('The NgWord ID does not exist');
     const result = await firstValueFrom(this.httpClient.delete<NgWord>(`${environment.serverUrl}/api/ng-words/${ngWordId}`));
-    console.log('NgDataService#removeNgWord() : Succeeded', result);
-    // 参照渡しで利用している画面側に反映されるよう配列操作する
-    this.ngWords.splice(removedIndex, 1);
+    // 削除したエンティティをキャッシュから削除する
+    const ngWords = this.ngWords$.getValue();
+    ngWords.splice(removedIndex, 1);
+    this.ngWords$.next(ngWords);
   }
   
   
@@ -124,10 +120,11 @@ export class NgDataService {
    * @return NG ドメイン一覧
    */
   public async findNgDomains(isForceGet?: boolean): Promise<Array<NgDomain>> {
-    if(isForceGet || this.ngDomains.length === 0) {  // 強制再取得モードかキャッシュがなければ取得する
-      this.ngDomains = await firstValueFrom(this.httpClient.get<Array<NgDomain>>(`${environment.serverUrl}/api/ng-domains`));
+    if(isForceGet || this.ngDomains$.getValue().length === 0) {  // 強制再取得モードかキャッシュがなければ取得する
+      const ngDomains = await firstValueFrom(this.httpClient.get<Array<NgDomain>>(`${environment.serverUrl}/api/ng-domains`));
+      this.ngDomains$.next(ngDomains);
     }
-    return this.ngDomains;
+    return this.ngDomains$.getValue();
   }
   
   /**
@@ -138,8 +135,10 @@ export class NgDataService {
   public async createNgDomain(ngDomain: NgDomain): Promise<void> {
     const createdNgDomain = await firstValueFrom(this.httpClient.post<NgDomain>(`${environment.serverUrl}/api/ng-domains`, ngDomain));
     console.log('NgDataService#createNgDomain() : Succeeded', createdNgDomain);
-    // 参照渡しで利用している画面側に反映されるよう配列操作する
-    this.ngDomains.push(createdNgDomain);
+    // 登録後のエンティティをキャッシュに追加する
+    const ngDomains = this.ngDomains$.getValue();
+    ngDomains.push(createdNgDomain);
+    this.ngDomains$.next(ngDomains);
   }
   
   /**
@@ -148,12 +147,12 @@ export class NgDataService {
    * @param ngDomainId 削除対象の NG ドメイン ID
    */
   public async removeNgDomain(ngDomainId: number): Promise<void> {
-    const removedIndex = this.ngDomains.findIndex((ngDomain) => ngDomain.id === ngDomainId);
-    if(removedIndex < 0) throw new Error('Invalid NgDomain ID');
-    
+    const removedIndex = this.ngDomains$.getValue().findIndex(ngDomain => ngDomain.id === ngDomainId);
+    if(removedIndex < 0) throw new Error('The NgDomain ID does not exist');
     const result = await firstValueFrom(this.httpClient.delete<NgDomain>(`${environment.serverUrl}/api/ng-domains/${ngDomainId}`));
-    console.log('NgDataService#removeNgDomain() : Succeeded', result);
-    // 参照渡しで利用している画面側に反映されるよう配列操作する
-    this.ngDomains.splice(removedIndex, 1);
+    // 削除したエンティティをキャッシュから削除する
+    const ngDomains = this.ngDomains$.getValue();
+    ngDomains.splice(removedIndex, 1);
+    this.ngDomains$.next(ngDomains);
   }
 }

@@ -20,12 +20,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   public handleRequest(error: any, user: any, info: Error): any {  // eslint-disable-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
     // トークン切れの場合はレスポンスを変える : `{"statusCode":401,"message":"JWT Access Token Expired","error":"Unauthorized"}` このようなレスポンスになる
     if(info instanceof TokenExpiredError) {
-      this.logger.warn('#handleRequest() : JWT Auth Guard Token Expired Error', { error, user, info });  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+      this.logger.warn('#handleRequest() : Token expired error', { error, user, info });  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
       throw new UnauthorizedException('JWT Access Token Expired');
     }
     // エラーがある・もしくは Token 認証切れの際は `user` が `false` になっているのでエラーと判断する
     if(error || !user) {
-      this.logger.warn('#handleRequest() : JWT Auth Guard Other Errors', { error, user, info });  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+      this.logger.warn('#handleRequest() : Unauthorized error', { error, user, info });  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
       throw error || new UnauthorizedException();
     }
     // トークン認証成功時

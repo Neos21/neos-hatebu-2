@@ -17,11 +17,11 @@ import { AppComponent } from './app.component';
 @NgModule({
   imports: [
     BrowserModule,
-    // App
-    AppRoutingModule,
     // Common
     CoreModule,
-    SharedModule
+    SharedModule,
+    // App
+    AppRoutingModule,
   ],
   declarations: [
     // App

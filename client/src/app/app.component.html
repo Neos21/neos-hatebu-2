@@ -1,4 +1,4 @@
-<p>{{ title }} app is running!</p>
+<h1>{{ (sharedStateService.pageTitle$ | async) || 'Neo\'s Hatebu' }}</h1>
 <ul>
   <li><button type="button" [routerLink]="['/login'     ]" [routerLinkActive]="'active'">Login</button></li>
   <li><button type="button" [routerLink]="['/home'      ]" [routerLinkActive]="'active'">Home</button></li>

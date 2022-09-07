@@ -49,7 +49,7 @@ import { AppService } from './app.service';
       ],
       synchronize: true
     }),
-    // Cron 定期実行機能
+    // Cron 定期実行機能用
     ScheduleModule.forRoot(),
     
     // Modules
@@ -59,18 +59,16 @@ import { AppService } from './app.service';
     NgWordsModule,
     NgDomainsModule,
     // `/api` の Prefix を付ける : https://docs.nestjs.com/recipes/router-module
-    RouterModule.register([
-      {
-        path: 'api',
-        children: [
-          AuthModule,
-          CategoriesModule,
-          NgUrlsModule,
-          NgWordsModule,
-          NgDomainsModule
-        ]
-      }
-    ]),
+    RouterModule.register([{
+      path: 'api',
+      children: [
+        AuthModule,
+        CategoriesModule,
+        NgUrlsModule,
+        NgWordsModule,
+        NgDomainsModule
+      ]
+    }]),
   ],
   controllers: [
     AppController

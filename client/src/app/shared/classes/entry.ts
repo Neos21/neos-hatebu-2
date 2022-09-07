@@ -1,25 +1,25 @@
 /** 記事 */
 export class Entry {
   /** ID */
-  public id: number;
+  public readonly id!: number;
   /** カテゴリ ID (`categories.id`) */
-  public categoryId: number;
+  public readonly categoryId!: number;
   /** 記事タイトル */
-  public title: string;
+  public readonly title!: string;
   /** 記事 URL */
-  public url: string;
+  public readonly url!: string;
   /** 記事本文抜粋 */
-  public description: string;
+  public readonly description!: string;
   /** ブクマ数 */
-  public count: string;
+  public readonly count!: string;
   /** 日時 */
-  public date: string;
+  public readonly date!: string;
   /** Favicon URL */
-  public faviconUrl: string;
+  public readonly faviconUrl!: string;
   /** サムネイル URL */
-  public thumbnailUrl: string;
+  public readonly thumbnailUrl!: string;
   /** クロール日時 */
-  public createdAt: string;
+  public readonly createdAt!: string;
   
   constructor(partial: Partial<Entry>) {
     Object.assign(this, partial);

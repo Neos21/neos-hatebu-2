@@ -11,8 +11,6 @@ export class AuthGuard implements CanActivate {
   /**
    * 画面遷移前に認証チェックする
    * 
-   * @param _activatedRouteSnapshot ActivatedRouteSnapshot
-   * @param _routerStateSnapshot RouterStateSnapshot
    * @return 遷移してよければ `true`、遷移させたくなければ `false` を返す
    */
   public async canActivate(): Promise<boolean> {
@@ -22,7 +20,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
     catch(error) {
-      console.warn('AuthGuard#canActivate() : 自動再ログイン試行失敗・ログイン画面にリダイレクトする', error);
+      console.warn('AuthGuard#canActivate() : Failed to re-login. Redirect to login page', error);
       this.router.navigate(['/login']);
       return false;
     }

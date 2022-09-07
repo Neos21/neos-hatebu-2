@@ -1,8 +1,3 @@
-/* Bootstrap 4
-$red   : #e72437;  // danger
-$yellow: #f1ba03;  // warning
- */
-
 /* Yu Gothic : Windows Full Name → Windows PostScript Name */
 @font-face { font-family: "Yu Gothic"; src: local("Yu Gothic Medium"), local("YuGothic-Medium"); }
 @font-face { font-family: "Yu Gothic"; src: local("Yu Gothic Bold"  ), local("YuGothic-Bold"  ); font-weight: bold; }
@@ -41,4 +36,9 @@ input, textarea {
   font-size: 16px;  /* iOS でズームされないように固定する */
   font-family: var(--font-family-monospace);
   user-select: element;  /* この要素内に限りテキスト選択させる */
+}
+
+.text-warning {
+  color: #f9b300;
+  font-weight: bold;
 }

@@ -1,9 +1,9 @@
 /** NG ドメイン */
 export class NgDomain {
   /** ID */
-  public id: number;
+  public readonly id!: number;
   /** NG ドメイン */
-  public domain: string;
+  public domain!: string;
   
   constructor(partial: Partial<NgDomain>) {
     Object.assign(this, partial);

@@ -41,8 +41,8 @@ export class AppService {
   @Cron('0 0 6,11,15,17 * * *', { timeZone: 'Asia/Tokyo' })
   private async handleCron(): Promise<void> {
     this.logger.log('#handleCron() : Start');
-    await this.ngUrlsService.removeByCreatedAt().catch((error) => this.logger.warn('#handleCron() :   Failed At NgUrlsService#removeByCreatedAt()', error));
-    await this.entriesService.scrapeAllEntries().catch((error) => this.logger.warn('#handleCron() :   Failed At EntriesService#scrapeAllEntries()', error));
+    await this.ngUrlsService.removeByCreatedAt().catch((error) => this.logger.warn('#handleCron() :   Failed at NgUrlsService#removeByCreatedAt()', error));
+    await this.entriesService.scrapeAllEntries().catch((error) => this.logger.warn('#handleCron() :   Failed at EntriesService#scrapeAllEntries()', error));
     this.logger.log('#handleCron() : Finished');
   }
 }

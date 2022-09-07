@@ -1,1 +1,12 @@
-<p>home works!</p>
+<h1>Home</h1>
+
+<app-loading *ngIf="isLoading$ | async"></app-loading>
+<app-error *ngIf="error$ | async as error" [error]="error"></app-error>
+
+<p>
+  <button type="button" (click)="testLoadCategory(2)" [disabled]="isLoading$ | async">2</button>
+  <button type="button" (click)="testCauseError()">Err</button>
+</p>
+<div *ngIf="category$ | async as category">
+  <div>{{ category | json }}</div>
+</div>

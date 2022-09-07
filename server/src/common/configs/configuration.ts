@@ -7,7 +7,7 @@
  */
 const getStringValue = (envName: string, defaultValue: string): string => {
   if(process.env[envName] == null || process.env[envName]?.trim() === '') {
-    console.log(`configuration#getStringValue()  : Env [${envName}] is empty. Use default value ... [${defaultValue}]`);
+    console.log(`configuration#getStringValue()  : Env [${envName}] is empty. Use default value [${defaultValue}]`);
     return defaultValue;
   }
   const stringValue = process.env[envName]!;  // eslint-disable-line @typescript-eslint/no-non-null-assertion
@@ -24,13 +24,13 @@ const getStringValue = (envName: string, defaultValue: string): string => {
  */
 const getNumberValue = (envName: string, defaultValue: number): number => {
   if(process.env[envName] == null || process.env[envName]?.trim() === '') {
-    console.log(`configuration#getNumberValue()  : Env [${envName}] is empty. Use default value ... [${defaultValue}]`);
+    console.log(`configuration#getNumberValue()  : Env [${envName}] is empty. Use default value [${defaultValue}]`);
     return defaultValue;
   }
   const rawValue = process.env[envName]!;  // eslint-disable-line @typescript-eslint/no-non-null-assertion
   const numberValue = Number(rawValue);
   if(Number.isNaN(numberValue)) {
-    console.log(`configuration#getNumberValue()  : Env [${envName}] value is NaN [${rawValue}]. Use default value ... [${defaultValue}]`);
+    console.log(`configuration#getNumberValue()  : Env [${envName}] value is NaN [${rawValue}]. Use default value [${defaultValue}]`);
     return defaultValue;
   }
   console.log(`configuration#getNumberValue()  : Env [${envName}] = [${numberValue}]`);

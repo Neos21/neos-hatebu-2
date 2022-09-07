@@ -19,7 +19,7 @@ const routes: Routes = [
   
   // 未指定時は `/home` へのリダイレクトにしておき `/home` に設定した `AuthGuard` によって `/login` か `/home` に振り分けさせる
   { path: ''  , pathMatch: 'full', redirectTo: '/home' },
-  { path: '**',                    redirectTo: '/'     }  // 404
+  { path: '**',                    redirectTo: ''      }  // 404
 ];
 
 /** App Routing */

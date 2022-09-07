@@ -30,10 +30,10 @@ export class NgDomainsService {
     const insertResult = await this.ngDomainsRepository.insert(ngDomain);
     const id: number = insertResult.identifiers?.[0]?.id;  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
     if(id == null) {
-      this.logger.error('#create() : Something Wrong', insertResult);
-      throw new Error('Failed To Insert NgDomain');
+      this.logger.error('#create() : Failed', insertResult);
+      throw new Error('Failed to insert NgDomain');
     }
-    return this.ngDomainsRepository.findOneByOrFail({ id: id });
+    return this.ngDomainsRepository.findOneByOrFail({ id });
   }
   
   /**

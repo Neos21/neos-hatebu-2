@@ -23,7 +23,9 @@ module.exports = {
       extends: [
         'plugin:@angular-eslint/template/recommended'
       ],
-      rules: {}
+      rules: {
+        '@angular-eslint/template/eqeqeq': ['error', { allowNullOrUndefined: true }]
+      }
     }
   ]
 };

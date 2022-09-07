@@ -1,1 +1,16 @@
-<p>ng-domains works!</p>
+<app-loading *ngIf="isLoading$ | async"></app-loading>
+<app-error *ngIf="error$ | async as error" [error]="error"></app-error>
+
+<ng-container *ngIf="ngDomains$ | async as ngDomains">
+  <form [formGroup]="form" (ngSubmit)="create()">
+    <input type="text" formControlName="domain" placeholder="NG ドメインを追加">
+    <button type="submit" [disabled]="form.invalid">追加</button>
+  </form>
+  
+  <ol *ngIf="ngDomains.length">
+    <li *ngFor="let ngDomain of ngDomains">
+      <button type="button" (click)="remove(ngDomain.id)">削除</button>
+      {{ ngDomain.domain }}
+    </li>
+  </ol>
+</ng-container>
