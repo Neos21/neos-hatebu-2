@@ -7,16 +7,16 @@ import { SharedStateService } from '../shared/services/shared-state.service';
 import { NgWordsService } from '../shared/services/ng-words.service';
 import { NgWord } from '../shared/classes/ng-word';
 
-/** NG ワード管理画面 */
+/** NG ワード管理ページ */
 @Component({
   selector: 'app-ng-words',
   templateUrl: './ng-words.component.html',
   styleUrls: ['./ng-words.component.css']
 })
 export class NgWordsComponent implements OnInit, OnDestroy {
-  /** 登録欄 */
+  /** 登録フォーム */
   public form!: FormGroup;
-  /** 画面データの状態管理オブジェクト */
+  /** ページデータの状態管理オブジェクト */
   private readonly dataState$ = new BehaviorSubject<{ isLoading?: boolean; error?: Error | string | any }>({ isLoading: true });
   /** ローディング中か否か */
   public readonly isLoading$  = this.dataState$.pipe(map(dataState => dataState.isLoading));
@@ -33,10 +33,10 @@ export class NgWordsComponent implements OnInit, OnDestroy {
   
   /** 初期表示時 */
   public async ngOnInit(): Promise<void> {
-    this.sharedStateService.setPageTitle('NG ワード管理');
     this.form = this.formBuilder.group({
       word: ['', [Validators.required]]
     });
+    this.sharedStateService.setPageTitle('NG ワード管理');
     
     try {
       await this.ngWordsService.findAll();

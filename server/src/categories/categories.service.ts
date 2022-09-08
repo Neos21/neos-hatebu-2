@@ -177,7 +177,7 @@ export class CategoriesService implements OnModuleInit {
       const count        = $(element).find('.entrylist-contents-users span').text();
       const date         = $(element).find('.entrylist-contents-date').text();  // `YYYY/MM/DD HH:mm`
       const faviconUrl   = $(element).find('.entrylist-contents-domain img').attr('src');
-      const thumbnailUrl = `${$(element).find('.entrylist-contents-thumb span').attr('style')}`  // eslint-disable-line @typescript-eslint/restrict-template-expressions
+      const thumbnailUrl = `${$(element).find('.entrylist-contents-thumb span').attr('style')}`
         .replace('background-image:url(\'', '')
         .replace('\');', '')
         .replace((/^undefined$/), '');  // サムネイルがない記事は `span` 要素がなく最終的な文字列が `undefined` になるので空文字に修正する

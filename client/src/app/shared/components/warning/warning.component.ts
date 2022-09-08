@@ -7,6 +7,6 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./warning.component.css']
 })
 export class WarningComponent {
-  /** ローディングメッセージ */
+  /** ワーニングメッセージ */
   @Input() public message?: string;
 }

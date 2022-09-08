@@ -25,7 +25,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   public login(@Req() req: Request): { accessToken: string } {
-    return { accessToken: this.jwtService.sign(req.user!) };  // eslint-disable-line @typescript-eslint/no-non-null-assertion
+    return { accessToken: this.jwtService.sign(req.user!) };
   }
   
   /**

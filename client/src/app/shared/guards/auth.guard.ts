@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
   constructor(private readonly router: Router, private readonly authService: AuthService) { }
   
   /**
-   * 画面遷移前に認証チェックする
+   * 遷移前に認証チェックする
    * 
    * @return 遷移してよければ `true`、遷移させたくなければ `false` を返す
    */

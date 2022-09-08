@@ -28,7 +28,7 @@ export class NgDomainsService {
    */
   public async create(ngDomain: NgDomain): Promise<NgDomain> {
     const insertResult = await this.ngDomainsRepository.insert(ngDomain);
-    const id: number = insertResult.identifiers?.[0]?.id;  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+    const id: number = insertResult.identifiers?.[0]?.id;
     if(id == null) {
       this.logger.error('#create() : Failed', insertResult);
       throw new Error('Failed to insert NgDomain');

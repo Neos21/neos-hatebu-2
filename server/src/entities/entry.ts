@@ -52,7 +52,7 @@ export class Entry {
   public createdAt: Date;
   
   /** カテゴリ情報 (親) との親子関係を示す (カラムは作られない) */
-  @ManyToOne(() => Category, (category) => category.entries, { createForeignKeyConstraints: false })
+  @ManyToOne(() => Category, category => category.entries, { createForeignKeyConstraints: false })
   @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })  // 本 `entries.category_id` が `categories.id` (親) の Foreign Key であることを示す
   public category: Category;
   

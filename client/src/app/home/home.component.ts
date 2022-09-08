@@ -14,7 +14,7 @@ import { Category } from '../shared/classes/category';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  /** 画面データの状態管理オブジェクト */
+  /** ページデータの状態管理オブジェクト */
   private readonly dataState$ = new BehaviorSubject<{ isLoading?: boolean; error?: Error | string | any }>({ isLoading: true });
   /** ローディング中か否か */
   public readonly isLoading$  = this.dataState$.pipe(map(dataState => dataState.isLoading));
@@ -125,7 +125,7 @@ export class HomeComponent implements OnInit, OnDestroy {
    * @param categoryId カテゴリ ID
    */
   private movePage(categoryId: number): void {
-    console.log('HomeComponent#moveCategory() : Category ID', categoryId);
+    console.log(`HomeComponent#moveCategory() : Category ID [${categoryId}]`);
     this.router.navigate(['/home'], { queryParams: { [this.queryParamKey]: categoryId }});
   }
 }

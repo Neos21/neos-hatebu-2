@@ -7,16 +7,16 @@ import { SharedStateService } from '../shared/services/shared-state.service';
 import { NgDomainsService } from '../shared/services/ng-domains.service';
 import { NgDomain } from '../shared/classes/ng-domain';
 
-/** NG ドメイン管理画面 */
+/** NG ドメイン管理ページ */
 @Component({
   selector: 'app-ng-domains',
   templateUrl: './ng-domains.component.html',
   styleUrls: ['./ng-domains.component.css']
 })
 export class NgDomainsComponent implements OnInit, OnDestroy {
-  /** 登録欄 */
+  /** 登録フォーム */
   public form!: FormGroup;
-  /** 画面データの状態管理オブジェクト */
+  /** ページデータの状態管理オブジェクト */
   private readonly dataState$ = new BehaviorSubject<{ isLoading?: boolean; error?: Error | string | any }>({ isLoading: true });
   /** ローディング中か否か */
   public readonly isLoading$  = this.dataState$.pipe(map(dataState => dataState.isLoading));
@@ -33,10 +33,10 @@ export class NgDomainsComponent implements OnInit, OnDestroy {
   
   /** 初期表示時 */
   public async ngOnInit(): Promise<void> {
-    this.sharedStateService.setPageTitle('NG ドメイン管理');
     this.form = this.formBuilder.group({
       domain: ['', [Validators.required]]
     });
+    this.sharedStateService.setPageTitle('NG ドメイン管理');
     
     try {
       await this.ngDomainsService.findAll();
@@ -61,7 +61,7 @@ export class NgDomainsComponent implements OnInit, OnDestroy {
       // プロトコル部分があれば除去しておく
       const domain = `${this.form.value.domain}`.trim().replace(/^https?:\/\//, '');
       
-      if(this.ngDomains$.getValue()!.some(ngDomain => ngDomain.domain === domain)) {
+      if(this.ngDomains$.getValue()!.some(ngDomain => ngDomain.domain === domain)) {  // TODO : 曖昧一致
         this.dataState$.next({ error: `${domain} は登録済です。` });
         return this.form.reset();
       }

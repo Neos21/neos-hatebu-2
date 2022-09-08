@@ -4,10 +4,11 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { RouterModule } from '@nestjs/core';
 import { ScheduleModule} from '@nestjs/schedule';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Common
-import configuration from './common/configs/configuration';
+import { configuration } from './common/configs/configuration';
 import { AccessLogMiddleware } from './common/middlewares/access-log.middleware';
 
 // Entities
@@ -39,7 +40,7 @@ import { AppService } from './app.service';
     // TypeORM : https://docs.nestjs.com/techniques/database
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: path.resolve(__dirname, '../db/neos-hatebu.sqlite3.db'),
+      database: path.resolve(__dirname, '../db/neos-hatebu.sqlite3.db'),  // TODO : 環境変数注入できるようにするか要検討
       entities: [
         Category,
         Entry,
@@ -51,6 +52,10 @@ import { AppService } from './app.service';
     }),
     // Cron 定期実行機能用
     ScheduleModule.forRoot(),
+    // ビルドした Angular 資材を配信する
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '../../client/dist')  // TODO : 環境変数注入できるようにするか要検討
+    }),
     
     // Modules
     AuthModule,

@@ -28,7 +28,7 @@ export class NgUrlsService {
    */
   public async create(ngUrl: NgUrl): Promise<NgUrl> {
     const insertResult = await this.ngUrlsRepository.insert(ngUrl);
-    const id: number = insertResult.identifiers?.[0]?.id;  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+    const id: number = insertResult.identifiers?.[0]?.id;
     if(id == null) {
       this.logger.error('#create() : Failed', insertResult);
       throw new Error('Failed to insert NgUrl');
@@ -53,6 +53,6 @@ export class NgUrlsService {
     const targetDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - minusDates, 0, 0, 0, 0));  // マイナス値等は適切に処理してくれる
     this.logger.log(`#removeByCreatedAt() : Target date [${targetDate.toISOString()}]`);
     const deleteResult = await this.ngUrlsRepository.delete({ createdAt: LessThanOrEqual(targetDate) });
-    this.logger.log(`#removeByCreatedAt() : Removed rows [${deleteResult.affected}]`);  // eslint-disable-line @typescript-eslint/restrict-template-expressions
+    this.logger.log(`#removeByCreatedAt() : Removed rows [${deleteResult.affected}]`);
   }
 }

@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { CategoriesService } from './categories.service';
-import { NgUrlsService } from './ng-urls.service';
-import { NgWordsService } from './ng-words.service';
-import { NgDomainsService } from './ng-domains.service';
 import { NgUrl } from '../classes/ng-url';
 import { Category } from '../classes/category';
 import { NgWord } from '../classes/ng-word';
 import { NgDomain } from '../classes/ng-domain';
+
+import { CategoriesService } from './categories.service';
+import { NgUrlsService } from './ng-urls.service';
+import { NgWordsService } from './ng-words.service';
+import { NgDomainsService } from './ng-domains.service';
 
 /** API サービス */
 @Injectable({ providedIn: 'root' })
@@ -32,5 +33,13 @@ export class ApiService {
       this.ngDomains.findAll()
     ]);
     return { categories, ngUrls, ngWords, ngDomains };
+  }
+  
+  /** ログアウト用 : 全てのキャッシュを削除する */
+  public removeAllCaches(): void {
+    this.categories.categories$.next(null);
+    this.ngUrls.ngUrls$.next(null);
+    this.ngWords.ngWords$.next(null);
+    this.ngDomains.ngDomains$.next(null);
   }
 }

@@ -20,12 +20,12 @@ export class NgUrlsService {
    * @return NG URL 一覧
    */
   public async findAll(): Promise<Array<NgUrl>> {
-    if(this.ngUrls$.getValue() == null) {  // キャッシュがなければ取得してキャッシュする
-      console.log('NgUrlsService#findAll() : Fetch');
-      const ngUrls = await firstValueFrom(this.httpClient.get<Array<NgUrl>>(`${environment.serverUrl}/api/ng-urls`));
-      this.ngUrls$.next(ngUrls);
-    }
-    return this.ngUrls$.getValue()!;
+    const cachedNgUrls = this.ngUrls$.getValue();
+    if(cachedNgUrls != null) return cachedNgUrls;  // キャッシュを返す
+    // キャッシュがなければ取得してキャッシュする
+    const ngUrls = await firstValueFrom(this.httpClient.get<Array<NgUrl>>(`${environment.serverUrl}/api/ng-urls`));
+    this.ngUrls$.next(ngUrls);
+    return ngUrls;
   }
   
   /**
@@ -36,8 +36,6 @@ export class NgUrlsService {
    */
   public async create(ngUrl: NgUrl): Promise<NgUrl> {
     const createdNgUrl = await firstValueFrom(this.httpClient.post<NgUrl>(`${environment.serverUrl}/api/ng-urls`, ngUrl));
-    console.log('NgUrlsService#create() : Succeeded', createdNgUrl);
-    
     // 登録後のエンティティをキャッシュに追加する
     const ngUrls = this.ngUrls$.getValue()!;
     ngUrls.push(createdNgUrl);

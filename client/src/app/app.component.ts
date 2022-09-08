@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, Renderer2 } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
+import { NavigationEnd, Router } from '@angular/router';
 
 import { AuthService } from './shared/services/auth.service';
 import { SharedStateService } from './shared/services/shared-state.service';
@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe(event => {
       if(event instanceof NavigationEnd) {
         this.toggleMenu(false);
-        this.moveToTop();  // `RouterModule.forRoot()` に `scrollPositionRestoration: 'enabled'` を設定してみたが動きがカクつくので止めた
+        this.moveToTop();  // `RouterModule.forRoot()` の `scrollPositionRestoration: 'enabled'` だと動きがカクつくので止めた
       }
     });
   }
@@ -45,7 +45,7 @@ export class AppComponent implements OnInit {
    */
   public toggleMenu(isShown?: boolean): void {
     // 引数が指定されていれば引数に従って操作、そうでなければ現在の状態を反転させる
-    this.isShownMenu = typeof isShown !== 'undefined' ? isShown : !this.isShownMenu;
+    this.isShownMenu = isShown != null ? isShown : !this.isShownMenu;
     this.renderer2[this.isShownMenu ? 'addClass' : 'removeClass'](this.document.body, 'show-menu');
   }
   

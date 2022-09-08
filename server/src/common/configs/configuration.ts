@@ -6,11 +6,11 @@
  * @return 値
  */
 const getStringValue = (envName: string, defaultValue: string): string => {
-  if(process.env[envName] == null || process.env[envName]?.trim() === '') {
+  if(process.env[envName] == null || process.env[envName]!.trim() === '') {
     console.log(`configuration#getStringValue()  : Env [${envName}] is empty. Use default value [${defaultValue}]`);
     return defaultValue;
   }
-  const stringValue = process.env[envName]!;  // eslint-disable-line @typescript-eslint/no-non-null-assertion
+  const stringValue = process.env[envName]!;
   console.log(`configuration#getStringValue()  : Env [${envName}] = [${stringValue}]`);
   return stringValue;
 };
@@ -23,11 +23,11 @@ const getStringValue = (envName: string, defaultValue: string): string => {
  * @return 値
  */
 const getNumberValue = (envName: string, defaultValue: number): number => {
-  if(process.env[envName] == null || process.env[envName]?.trim() === '') {
+  if(process.env[envName] == null || process.env[envName]!.trim() === '') {
     console.log(`configuration#getNumberValue()  : Env [${envName}] is empty. Use default value [${defaultValue}]`);
     return defaultValue;
   }
-  const rawValue = process.env[envName]!;  // eslint-disable-line @typescript-eslint/no-non-null-assertion
+  const rawValue = process.env[envName]!;
   const numberValue = Number(rawValue);
   if(Number.isNaN(numberValue)) {
     console.log(`configuration#getNumberValue()  : Env [${envName}] value is NaN [${rawValue}]. Use default value [${defaultValue}]`);
@@ -45,12 +45,12 @@ const getNumberValue = (envName: string, defaultValue: number): number => {
  */
 const getBooleanValue = (envName: string): boolean => {
   const isTruthy = process.env[envName] != null;
-  console.log(`configuration#getBooleanValue() : Env [${envName}] = [${isTruthy}]`);  // eslint-disable-line @typescript-eslint/restrict-template-expressions
+  console.log(`configuration#getBooleanValue() : Env [${envName}] = [${isTruthy}]`);
   return isTruthy;
 }
 
 /** 環境変数のオブジェクトを返す : この関数内にオブジェクトを定義しないと環境変数が読み込まれない */
-export default (): { [key: string]: string | number | boolean } => ({
+export const configuration = (): { [key: string]: string | number | boolean } => ({
   port              : getNumberValue ('NEOS_HATEBU_PORT'                 , 2323                        ),  // ポート番号
   userName          : getStringValue ('NEOS_HATEBU_USERNAME'             , 'CHANGE-THIS-USER-NAME'     ),  // ユーザ名   : 本当はエラーにすべきか
   password          : getStringValue ('NEOS_HATEBU_PASSWORD'             , 'CHANGE-THIS-PASSWORD'      ),  // パスワード : 本当はエラーにすべきか

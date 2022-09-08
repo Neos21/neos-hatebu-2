@@ -20,11 +20,11 @@ async function bootstrap(): Promise<void> {
     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Headers, Access-Control-Allow-Credentials',
     credentials: true  // `Access-Control-Allow-Credentials` を許可する
   });
-  const port = app.get<ConfigService>(ConfigService).get<number>('port')!;  // eslint-disable-line @typescript-eslint/no-non-null-assertion
+  const port = app.get<ConfigService>(ConfigService).get<number>('port')!;
   await app.listen(port);
   
   // List Routes : https://qiita.com/18kondo/items/1b9793e67b320f640ddd
-  const router: Express = app.getHttpServer()._events.request._router;  // eslint-disable-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+  const router: Express = app.getHttpServer()._events.request._router;
   const endpoints: Array<expressListEndpoints.Endpoint> = expressListEndpoints(router);
   // 最長のパスに合わせて整形する
   const longestPathLength = Math.max(...endpoints.map((endpoint) => endpoint.path.length));

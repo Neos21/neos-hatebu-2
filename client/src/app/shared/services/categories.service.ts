@@ -20,15 +20,16 @@ export class CategoriesService {
    * @return カテゴリ一覧とそれぞれに紐付く記事一覧
    */
   public async findAll(): Promise<Array<Category>> {
-    if(this.categories$.getValue() == null) {  // キャッシュがなければ取得してキャッシュする
-      const categories = await firstValueFrom(this.httpClient.get<Array<Category>>(`${environment.serverUrl}/api/categories`));
-      this.categories$.next(categories);
-    }
-    return this.categories$.getValue()!;
+    const cachedCategories = this.categories$.getValue();
+    if(cachedCategories != null) return cachedCategories;  // キャッシュを返す
+    // キャッシュがなければ取得してキャッシュする
+    const categories = await firstValueFrom(this.httpClient.get<Array<Category>>(`${environment.serverUrl}/api/categories`));
+    this.categories$.next(categories);
+    return categories;
   }
   
   /**
-   * 対象カテゴリとそれに紐付く絵記事一覧を取得する
+   * 対象カテゴリとそれに紐付く記事一覧を取得する
    * 
    * @param id カテゴリ ID
    * @return 指定のカテゴリ情報と記事一覧
@@ -37,6 +38,7 @@ export class CategoriesService {
     const categories = this.categories$.getValue()!;
     const targetIndex = categories.findIndex(category => category.id === id);
     if(targetIndex < 0) throw new Error('The category does not exist');
+    // 取得してキャッシュする
     const category = await firstValueFrom(this.httpClient.get<Category>(`${environment.serverUrl}/api/categories/${id}`));
     categories[targetIndex] = category;
     this.categories$.next(categories);
@@ -49,9 +51,10 @@ export class CategoriesService {
    * @return カテゴリ一覧
    */
   public async reloadAll(): Promise<Array<Category>> {
+    // 取得してキャッシュする
     const categories = await firstValueFrom(this.httpClient.post<Array<Category>>(`${environment.serverUrl}/api/categories`, {}));
     this.categories$.next(categories);
-    return this.categories$.getValue()!;
+    return categories;
   }
   
   /**
@@ -64,6 +67,7 @@ export class CategoriesService {
     const categories = this.categories$.getValue()!;
     const targetIndex = categories.findIndex(category => category.id === id);
     if(targetIndex < 0) throw new Error('The category does not exist');
+    // 取得してキャッシュする
     const category = await firstValueFrom(this.httpClient.post<Category>(`${environment.serverUrl}/api/categories/${id}`, {}));
     categories[targetIndex] = category;
     this.categories$.next(categories);

@@ -29,12 +29,16 @@ export class AuthService {
    */
   public async login(userName: string, password: string): Promise<void> {
     try {
+      // ログイン試行する
       const { accessToken } = await firstValueFrom(this.httpClient.post<{ accessToken: string }>(`${environment.serverUrl}/api/auth/login`, { userName, password }));
+      // ログインできたら LocalStorage とキャッシュを保存する
       window.localStorage.setItem(this.authInfoStorageKey, JSON.stringify({ userName, password, accessToken }));
       this.accessToken = accessToken;
-      await this.apiService.fetchAll();  // どのページを初期表示しても良いように全ての必要なデータをログイン成功時に読み込んでおく
-      this.isLogined = true;
+      // どのページを初期表示しても良いように全ての必要な API データを読み込んでおく
+      await this.apiService.fetchAll();
+      // ログイン状態に切り替える
       console.log('AuthService#login() : Succeeded');
+      this.isLogined = true;
     }
     catch(error) {
       console.warn('AuthService#login() : Failed', { userName, password }, error);
@@ -43,7 +47,7 @@ export class AuthService {
     }
   }
   
-  /** LocalStorage の情報を基に自動再ログインする */
+  /** `AuthGuard` より呼び出す : LocalStorage の情報を基に自動再ログインする */
   public async reLogin(): Promise<void> {
     this.isReLogining = true;
     try {
@@ -64,9 +68,14 @@ export class AuthService {
   
   /** ログアウトする */
   public logout(): void {
-    this.isLogined = false;
+    // LocalStorage とキャッシュを削除する
     window.localStorage.removeItem(this.authInfoStorageKey);
     this.accessToken = '';
+    // API データのキャッシュを削除する
+    this.apiService.removeAllCaches();
+    // ログアウト状態にする
+    console.log('AuthService#logout() : Succeeded');
+    this.isLogined = false;
   }
   
   /** JWT 認証の確認用 : ユーザ情報を取得する */

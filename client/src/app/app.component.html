@@ -27,7 +27,7 @@
       
       <!-- ログイン時 -->
       <ng-container *ngIf="!authService.isReLogining && authService.isLogined">
-        <!-- カテゴリ一覧の読込中・エラー時にログアウトできるようにログイン画面へのリンクにしておく -->
+        <!-- カテゴリ一覧の読込中・エラー時にログアウトできるようにログインページへのリンクにしておく -->
         <p *ngIf="(categoriesService.categories$ | async) == null">
           <button type="button" [routerLink]="['/login']" [routerLinkActive]="'active'">(読込中…)</button>
         </p>

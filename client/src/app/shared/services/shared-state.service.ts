@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class SharedStateService {
   /** ページタイトル : 空白時の初期値は `AppComponent` にて処理する */
-  public pageTitle$ = new BehaviorSubject<string>('');
+  public readonly pageTitle$ = new BehaviorSubject<string>('');
   
   /**
    * ページタイトルを設定する

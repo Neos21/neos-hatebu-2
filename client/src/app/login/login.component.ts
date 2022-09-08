@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { AuthService } from '../shared/services/auth.service';
 import { SharedStateService } from '../shared/services/shared-state.service';
+import { AuthService } from '../shared/services/auth.service';
 
-/** Login 画面 */
+/** ログインページ */
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -20,8 +20,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
-    private readonly authService: AuthService,
-    private readonly sharedStateService: SharedStateService
+    private readonly sharedStateService: SharedStateService,
+    private readonly authService: AuthService
   ) { }
 
   /** 初期表示時 */
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
     });
     this.sharedStateService.setPageTitle('Login');
     
-    this.authService.logout();  // ログイン画面に遷移した時はログイン情報を削除しておく
+    this.authService.logout();  // ログインページに遷移した時はログイン情報を削除しておく
     
     // TODO : 初期表示時に表示するフィードバックメッセージがあれば表示する
     //const initMessage = sessionStorage.getItem(appConstants.sessionStorage.loginInitMessageKey);

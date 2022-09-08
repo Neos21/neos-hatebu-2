@@ -28,7 +28,7 @@ export class NgWordsService {
    */
   public async create(ngWord: NgWord): Promise<NgWord> {
     const insertResult = await this.ngWordsRepository.insert(ngWord);
-    const id: number = insertResult.identifiers?.[0]?.id;  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+    const id: number = insertResult.identifiers?.[0]?.id;
     if(id == null) {
       this.logger.error('#create() : Failed', insertResult);
       throw new Error('Failed to insert NgWord');

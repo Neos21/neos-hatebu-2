@@ -27,7 +27,7 @@ export class LocalStrategy extends PassportStrategy(BaseLocalStrategy) {
    * @return 認証成功時にユーザ情報を返す
    * @throws 認証失敗時
    */
-  public validate(userName: string, password: string): { userName: string } {  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+  public validate(userName: string, password: string): { userName: string } {
     if(userName !== this.configService.get<string>('userName') || password !== this.configService.get<string>('password')) throw new UnauthorizedException();  // 環境変数を参照する
     return { userName };
   }

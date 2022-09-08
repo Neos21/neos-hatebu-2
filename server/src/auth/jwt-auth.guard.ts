@@ -17,18 +17,18 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
    * @return トークン認証成功時に認証ユーザ情報を返す
    * @throws トークン認証失敗時
    */
-  public handleRequest(error: any, user: any, info: Error): any {  // eslint-disable-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+  public handleRequest(error: any, user: any, info: Error): any {
     // トークン切れの場合はレスポンスを変える : `{"statusCode":401,"message":"JWT Access Token Expired","error":"Unauthorized"}` このようなレスポンスになる
     if(info instanceof TokenExpiredError) {
-      this.logger.warn('#handleRequest() : Token expired error', { error, user, info });  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+      this.logger.warn('#handleRequest() : Token expired error', { error, user, info });
       throw new UnauthorizedException('JWT Access Token Expired');
     }
     // エラーがある・もしくは Token 認証切れの際は `user` が `false` になっているのでエラーと判断する
     if(error || !user) {
-      this.logger.warn('#handleRequest() : Unauthorized error', { error, user, info });  // eslint-disable-line @typescript-eslint/no-unsafe-assignment
+      this.logger.warn('#handleRequest() : Unauthorized error', { error, user, info });
       throw error || new UnauthorizedException();
     }
     // トークン認証成功時
-    return { userName: user.userName };  // eslint-disable-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    return { userName: user.userName };
   }
 }
