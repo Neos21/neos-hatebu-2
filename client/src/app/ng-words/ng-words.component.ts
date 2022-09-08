@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, map } from 'rxjs';
 
 import { SharedStateService } from '../shared/services/shared-state.service';
-import { NgDataService } from '../shared/services/ng-data.service';
+import { NgWordsService } from '../shared/services/ng-words.service';
 import { NgWord } from '../shared/classes/ng-word';
 
 /** NG ワード管理画面 */
@@ -19,16 +19,16 @@ export class NgWordsComponent implements OnInit, OnDestroy {
   /** 画面データの状態管理オブジェクト */
   private readonly dataState$ = new BehaviorSubject<{ isLoading?: boolean; error?: Error | string | any }>({ isLoading: true });
   /** ローディング中か否か */
-  public readonly isLoading$ = this.dataState$.pipe(map(dataState => dataState.isLoading));
+  public readonly isLoading$  = this.dataState$.pipe(map(dataState => dataState.isLoading));
   /** エラー */
-  public readonly error$     = this.dataState$.pipe(map(dataState => dataState.error));
+  public readonly error$      = this.dataState$.pipe(map(dataState => dataState.error));
   /** NG ワード一覧 */
-  public readonly ngWords$   = this.ngDataService.ngWords$;
+  public readonly ngWords$    = this.ngWordsService.ngWords$;
   
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly sharedStateService: SharedStateService,
-    private readonly ngDataService: NgDataService
+    private readonly ngWordsService: NgWordsService
   ) { }
   
   /** 初期表示時 */
@@ -39,7 +39,7 @@ export class NgWordsComponent implements OnInit, OnDestroy {
     });
     
     try {
-      await this.ngDataService.findNgWords();
+      await this.ngWordsService.findAll();
       this.dataState$.next({ isLoading: false });
     }
     catch(error) {
@@ -65,7 +65,7 @@ export class NgWordsComponent implements OnInit, OnDestroy {
         return this.form.reset();
       }
       
-      await this.ngDataService.createNgWord(new NgWord({ word }));
+      await this.ngWordsService.create(new NgWord({ word }));
       this.form.reset();
     }
     catch(error) {
@@ -81,7 +81,7 @@ export class NgWordsComponent implements OnInit, OnDestroy {
   public async remove(id: number): Promise<void> {
     try {
       this.dataState$.next({});  // Clear Error
-      await this.ngDataService.removeNgWord(id);
+      await this.ngWordsService.remove(id);
     }
     catch(error) {
       this.dataState$.next({ error });

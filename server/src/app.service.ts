@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 
-import { EntriesService } from './categories/entries.service';
+import { CategoriesService } from './categories/categories.service';
 import { NgUrlsService } from './ng-urls/ng-urls.service';
 
 /** App サービス */
@@ -9,7 +9,7 @@ import { NgUrlsService } from './ng-urls/ng-urls.service';
 export class AppService {
   private readonly logger: Logger = new Logger(AppService.name);
   constructor(
-    private readonly entriesService: EntriesService,
+    private readonly categoriesService: CategoriesService,
     private readonly ngUrlsService: NgUrlsService
   ) { }
   
@@ -41,8 +41,10 @@ export class AppService {
   @Cron('0 0 6,11,15,17 * * *', { timeZone: 'Asia/Tokyo' })
   private async handleCron(): Promise<void> {
     this.logger.log('#handleCron() : Start');
-    await this.ngUrlsService.removeByCreatedAt().catch((error) => this.logger.warn('#handleCron() :   Failed at NgUrlsService#removeByCreatedAt()', error));
-    await this.entriesService.scrapeAllEntries().catch((error) => this.logger.warn('#handleCron() :   Failed at EntriesService#scrapeAllEntries()', error));
+    await Promise.all([
+      this.categoriesService.scrapeAllEntries().catch(error => this.logger.warn('#handleCron() :   Failed at CategoriesService#scrapeAllEntries()', error)),
+      this.ngUrlsService   .removeByCreatedAt().catch(error => this.logger.warn('#handleCron() :   Failed at NgUrlsService#removeByCreatedAt()'   , error))
+    ]);
     this.logger.log('#handleCron() : Finished');
   }
 }

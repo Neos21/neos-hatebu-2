@@ -1,37 +1,68 @@
 <div class="app">
-  <div class="header">{{ (sharedStateService.pageTitle$ | async) || 'Neo\'s Hatebu' }}</div>
-  <div class="menu">
-    <ng-container *ngIf="authService.isReLogining">
-      <ul>
-        <li>(自動再ログイン中…)</li>
-        <li><button type="button" [routerLink]="['/login']">ログイン</button></li>
-        <li><button type="button" onclick="window.open('https://b.hatena.ne.jp/', '_blank')">はてなブックマーク</button></li>
-      </ul>
-    </ng-container>
-    <ng-container *ngIf="!authService.isReLogining && !authService.isLogined">
-      <ul>
-        <li><button type="button" [routerLink]="['/login']">ログインしてください</button></li>
-        <li><button type="button" onclick="window.open('https://b.hatena.ne.jp/', '_blank')">はてなブックマーク</button></li>
-      </ul>
-    </ng-container>
-    <ng-container *ngIf="!authService.isReLogining && authService.isLogined">
-      <ng-container *ngIf="categoriesService.categories$ | async as categories">
-        <ul *ngIf="categories.length !== 0">
-          <li *ngFor="let category of categories">
-            <button type="button" [routerLink]="['/home']" [queryParams]="{ category_id: category.id }">{{ category.name }}</button>
-          </li>
-        </ul>
-      </ng-container>
-      <ul>
-        <li><button type="button" [routerLink]="['/ng-urls']">NG URL 確認</button></li>
-        <li><button type="button" [routerLink]="['/ng-words']">NG ワード管理</button></li>
-        <li><button type="button" [routerLink]="['/ng-domains']">NG ドメイン管理</button></li>
-        <li><button type="button" (click)="reloadAll()">全更新</button></li>
-        <li><button type="button" onclick="window.open('https://b.hatena.ne.jp/', '_blank')">はてなブックマーク</button></li>
-        <li><button type="button" (click)="logout()">ログアウト</button></li>
-      </ul>
-    </ng-container>
+  <div class="header">
+    <button type="button" class="hamburger-icon" (click)="toggleMenu()">
+      <span class="hamburger-icon-bar"></span>
+      <span class="hamburger-icon-bar"></span>
+      <span class="hamburger-icon-bar"></span>
+    </button>
+    
+    <h1 class="page-title">
+      <span (click)="toggleHand()">{{ (sharedStateService.pageTitle$ | async) || 'Neo\'s Hatebu' }}</span>
+    </h1>
+    
+    <button type="button" class="site-title" (click)="moveToTop()">Neo's<br>Hatebu</button>
   </div>
+  
+  <div class="menu">
+    <div class="menu-container">
+      <!-- 自動再ログイン試行中 -->
+      <p *ngIf="authService.isReLogining">
+        <button type="button" [routerLink]="['/login']" [routerLinkActive]="'active'">(自動再ログイン中…)</button>
+      </p>
+      
+      <!-- 未ログイン -->
+      <p *ngIf="!authService.isReLogining && !authService.isLogined">
+        <button type="button" [routerLink]="['/login']" [routerLinkActive]="'active'">ログインしてください</button>
+      </p>
+      
+      <!-- ログイン時 -->
+      <ng-container *ngIf="!authService.isReLogining && authService.isLogined">
+        <!-- カテゴリ一覧の読込中・エラー時にログアウトできるようにログイン画面へのリンクにしておく -->
+        <p *ngIf="(categoriesService.categories$ | async) == null">
+          <button type="button" [routerLink]="['/login']" [routerLinkActive]="'active'">(読込中…)</button>
+        </p>
+        
+        <!-- カテゴリ一覧の読込完了・全てのメニューを表示する -->
+        <ng-container *ngIf="categoriesService.categories$ | async as categories">
+          <p>
+            <ng-container *ngFor="let category of categories">
+              <button type="button" [routerLink]="['/home']" [queryParams]="{ category_id: category.id }" [routerLinkActive]="'active'">{{ category.name }}</button>
+            </ng-container>
+          </p>
+          
+          <p>
+            <button type="button" [routerLink]="['/ng-urls']"    [routerLinkActive]="'active'">NG URL 確認</button>
+            <button type="button" [routerLink]="['/ng-words']"   [routerLinkActive]="'active'">NG ワード管理</button>
+            <button type="button" [routerLink]="['/ng-domains']" [routerLinkActive]="'active'">NG ドメイン管理</button>
+          </p>
+        </ng-container>
+      </ng-container>
+      
+      <!-- 常に表示しておく -->
+      <p>
+        <button type="button" onclick="window.open('https://b.hatena.ne.jp/', '_blank')">はてなブックマーク</button>
+      </p>
+      
+      <!-- ログイン時 -->
+      <p *ngIf="!authService.isReLogining && authService.isLogined">
+        <button type="button" (click)="logout()">ログアウト</button>
+      </p>
+    </div>
+  </div>
+  
+  <!-- メニューを閉じるための背景 -->
+  <button type="button" class="menu-background" (click)="toggleMenu(false)"><span>メニューを閉じる</span></button>
+  
   <div class="main">
     <router-outlet></router-outlet>
   </div>

@@ -13,7 +13,6 @@ html {
   overflow: hidden scroll;
   overflow-wrap: break-word;
   color: #000;  /* TODO */
-  font-size: 16px;
   font-family: var(--font-family-sans-serif);
           text-decoration-skip-ink: none;  /* リンクの下線を常に表示する */
   -webkit-text-decoration-skip: objects ;  /* リンクの下線を常に表示する */
@@ -36,6 +35,15 @@ input, textarea {
   font-size: 16px;  /* iOS でズームされないように固定する */
   font-family: var(--font-family-monospace);
   user-select: element;  /* この要素内に限りテキスト選択させる */
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  color: inherit;
+  cursor: pointer;
 }
 
 .text-warning {

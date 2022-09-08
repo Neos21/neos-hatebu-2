@@ -28,6 +28,22 @@ export class CategoriesService {
   }
   
   /**
+   * 対象カテゴリとそれに紐付く絵記事一覧を取得する
+   * 
+   * @param id カテゴリ ID
+   * @return 指定のカテゴリ情報と記事一覧
+   */
+  public async findById(id: number): Promise<Category> {
+    const categories = this.categories$.getValue()!;
+    const targetIndex = categories.findIndex(category => category.id === id);
+    if(targetIndex < 0) throw new Error('The category does not exist');
+    const category = await firstValueFrom(this.httpClient.get<Category>(`${environment.serverUrl}/api/categories/${id}`));
+    categories[targetIndex] = category;
+    this.categories$.next(categories);
+    return category;
+  }
+  
+  /**
    * 全カテゴリの記事一覧を再スクレイピングしてカテゴリ一覧を再取得する
    * 
    * @return カテゴリ一覧

@@ -6,25 +6,14 @@ import { Entry } from '../entities/entry';
 
 import { CategoriesController } from './categories.controller';
 import { CategoriesService } from './categories.service';
-import { EntriesService } from './entries.service';
 
 /** カテゴリモジュール */
 @Module({
   imports: [
-    TypeOrmModule.forFeature([  // Repository を使えるようにする
-      Category,
-      Entry
-    ])
+    TypeOrmModule.forFeature([Category, Entry])  // Repository を使えるようにする
   ],
-  controllers: [
-    CategoriesController
-  ],
-  providers: [
-    CategoriesService,
-    EntriesService
-  ],
-  exports: [
-    EntriesService  // `AppModule` で使うためエクスポートする
-  ]
+  controllers: [CategoriesController],
+  providers: [CategoriesService],
+  exports: [CategoriesService]  // `AppModule` で使うためエクスポートする
 })
 export class CategoriesModule { }

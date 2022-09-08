@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, map } from 'rxjs';
 
 import { SharedStateService } from '../shared/services/shared-state.service';
-import { NgDataService } from '../shared/services/ng-data.service';
+import { NgDomainsService } from '../shared/services/ng-domains.service';
 import { NgDomain } from '../shared/classes/ng-domain';
 
 /** NG ドメイン管理画面 */
@@ -19,16 +19,16 @@ export class NgDomainsComponent implements OnInit, OnDestroy {
   /** 画面データの状態管理オブジェクト */
   private readonly dataState$ = new BehaviorSubject<{ isLoading?: boolean; error?: Error | string | any }>({ isLoading: true });
   /** ローディング中か否か */
-  public readonly isLoading$ = this.dataState$.pipe(map(dataState => dataState.isLoading));
+  public readonly isLoading$  = this.dataState$.pipe(map(dataState => dataState.isLoading));
   /** エラー */
-  public readonly error$     = this.dataState$.pipe(map(dataState => dataState.error));
+  public readonly error$      = this.dataState$.pipe(map(dataState => dataState.error));
   /** NG ドメイン一覧 */
-  public readonly ngDomains$ = this.ngDataService.ngDomains$;
+  public readonly ngDomains$  = this.ngDomainsService.ngDomains$;
   
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly sharedStateService: SharedStateService,
-    private readonly ngDataService: NgDataService
+    private readonly ngDomainsService: NgDomainsService
   ) { }
   
   /** 初期表示時 */
@@ -39,7 +39,7 @@ export class NgDomainsComponent implements OnInit, OnDestroy {
     });
     
     try {
-      await this.ngDataService.findNgDomains();
+      await this.ngDomainsService.findAll();
       this.dataState$.next({ isLoading: false });
     }
     catch(error) {
@@ -66,7 +66,7 @@ export class NgDomainsComponent implements OnInit, OnDestroy {
         return this.form.reset();
       }
       
-      await this.ngDataService.createNgDomain(new NgDomain({ domain }));
+      await this.ngDomainsService.create(new NgDomain({ domain }));
       this.form.reset();
     }
     catch(error) {
@@ -82,7 +82,7 @@ export class NgDomainsComponent implements OnInit, OnDestroy {
   public async remove(id: number): Promise<void> {
     try {
       this.dataState$.next({});  // Clear Error
-      await this.ngDataService.removeNgDomain(id);
+      await this.ngDomainsService.remove(id);
     }
     catch(error) {
       this.dataState$.next({ error });

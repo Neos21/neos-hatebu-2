@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
     private readonly sharedStateService: SharedStateService
   ) { }
 
-  /** 画面初期表示時 */
+  /** 初期表示時 */
   public ngOnInit(): void {
     this.form = this.formBuilder.group({
       userName: ['', [Validators.required]],
@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
     //if(initMessage) this.message = initMessage;
   }
   
-  /** 「Login」ボタン押下時 */
+  /** ログイン試行する */
   public async login(): Promise<void> {
     this.error = undefined;
     try {

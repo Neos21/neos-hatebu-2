@@ -1,24 +1,247 @@
+/* App
+ * ================================================================================ */
+
 .app {
   min-height: 100%;
   
+  --colour-background: #008fde;
+  --colour-text: #fff;
+  --colour-text-darken: #e6e5e5;
+  
+  --header-height: 55px;
   --menu-width: 270px;
+  
+  --transition: .2s;
 }
 
-.header {
-  padding-left: calc(var(--menu-width) + 1rem);
-  background: #fcc;  /* TODO */
+/* 共通 */
+.app button {
+  border: 0;
+  background: var(--colour-background);
+  overflow: hidden;
+  outline: 0;
 }
+
+.app button:hover, .app span:hover {
+  color: var(--colour-text-darken);
+}
+
+/* Header
+ * ================================================================================ */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--header-height);
+  color: var(--colour-text);  /* ベース文字色 */
+  background: var(--colour-background);
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, .3);
+  z-index: 99980;  /* `.menu` より下 */
+}
+
+/* ハンバーガーメニュー */
+.hamburger-icon {  /* button */
+  position: absolute;
+  width: auto;
+  top: 0;
+  left: 0;
+  height: var(--header-height);
+  padding: 0 1.5rem 0 1rem;
+  opacity: 1;
+}
+  /* 幅が広い時：非表示にする */
+  @media (min-width: 992px) {
+    .hamburger-icon {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+  /* 右利きモード */
+  :host-context(.right-hand-mode) .hamburger-icon {
+    left: auto;
+    right: 0;
+    padding: 0 1rem 0 1.5rem;
+  }
+  
+  /* 3本線 */
+  .hamburger-icon-bar {
+    display: block;
+    width: 25px;
+    height: 2px;
+    background: var(--colour-text);
+  }
+  .hamburger-icon-bar + .hamburger-icon-bar {
+    margin-top: 5px;
+  }
+  .hamburger-icon:hover .hamburger-icon-bar {
+    background: var(--colour-text-darken);
+  }
+
+/* ページタイトル */
+.page-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: bold;
+  text-align: center;
+  line-height: var(--header-height);
+  transition: padding-right var(--transition) padding-left var(--transition);
+}
+  /* 幅が広い時：サイドバー分の余白を開ける */
+  @media (min-width: 992px) {
+    .page-title {
+      padding-left : var(--menu-width);
+      padding-right: 0;
+    }
+    /* 右利きモード */
+    :host-context(.right-hand-mode) .page-title {
+      padding-left : 0;
+      padding-right: var(--menu-width);
+    }
+  }
+  
+  .page-title span {
+    display: inline-block;
+    height: 100%;
+    padding: 0 1rem;
+    cursor: pointer;
+  }
+
+/* サイトタイトル (トップに戻る) */
+.site-title {  /* button */
+  position: absolute;
+  top: calc(var(--header-height) / 2);
+  right: 0;
+  padding-right: .75rem;
+  padding-left : .75rem;
+  text-align: right;
+  font-size: .9rem;
+  line-height: 1.25;
+  transform: translateY(-50%);
+}
+  /* 右利きモード */
+  :host-context(.right-hand-mode) .site-title {
+    left: 0;
+    right: auto;
+    text-align: left;
+  }
+
+
+/* Menu
+ * ================================================================================ */
 
 .menu {
   position: fixed;
   top: 0;
-  left: 0;
+  left: calc(var(--menu-width) * -1 - 10px);  /* メニューの幅の分だけネガティブ指定して画面外に出しておく */
   width: var(--menu-width);
   height: 100%;
+  background: var(--colour-background);
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, .3);
+  transition: left var(--transition);
+  z-index: 99999;  /* `.header` よりも上に配置する */
+  -webkit-touch-callout: none;  /* iOS で長押ししてもポップアップメニューを開かせない */
+}
+  /* 幅が広い時：ハンバーガーメニューが表示されなくなったらメニューを常時表示にする */
+  @media (min-width: 992px) {
+    .menu { left: 0; }
+  }
+  /* 親 (`body`) 要素に `.show-menu` が付与されたらメニューを表示する */
+  :host-context(.show-menu) .menu { left: 0; }
+  
+  /* 右利きモード */
+  :host-context(.right-hand-mode) .menu {
+    left: auto;
+    right: calc(var(--menu-width) * -1 - 10px);
+    transition: right var(--transition);
+  }
+  /* 右利きモードで幅が広い時 */
+  @media (min-width: 992px) {
+    :host-context(.right-hand-mode) .menu {
+      right: 0;
+    }
+  }
+  /* 右利きモードで親 (`body`) 要素に `.show-menu` が付与された時 */
+  :host-context(.show-menu.right-hand-mode) .menu {
+    left: auto;
+    right: 0;
+  }
+
+/* コンテナ：iOS でうまくスクロールしなかったので子要素でスクロールさせる */
+.menu-container {
   overflow-y: auto;
-  background: #cff;  /* TODO */
+  height: 100%;
+  padding-top: .5rem;
+  -webkit-overflow-scrolling: touch;
 }
 
-.main {
-  padding-left: calc(var(--menu-width) + 1rem);
+/* メニュー項目を区切る段落 */
+.menu p {
+  margin: 0 0 1.1rem;
 }
+
+/* メニュー項目 */
+.menu button {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: .07rem .8rem;
+  color: var(--colour-text-darken);
+  font-size: 1.03rem;
+  text-align: left;
+  background: transparent;
+}
+  .menu button.active,  /* `routerLinkActive` 用 */
+  .menu button:hover {
+    color: var(--colour-text);
+    font-weight: bold;
+    text-shadow: var(--colour-text) 0 0 10px;
+  }
+
+
+/* Menu Background : メニュー背景に配置する、メニューを閉じるための半透明背景ボタン
+ * ================================================================================ */
+
+.menu-background {  /* button */
+  display: none;
+}
+.menu-background span { visibility: hidden; }  /* テキストは非表示 */
+:host-context(.show-menu) .menu-background {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .5);
+  z-index: 99990;  /* `.menu` より下・`.header` より上 */
+}
+  /* 幅が広い時：常に表示させない */
+  @media (min-width: 992px) {
+    :host-context(.show-menu) .menu-background { display: none; }
+  }
+
+
+/* Main : コンテンツ部分
+ * ================================================================================ */
+
+.main {
+  margin-left: 0;  /* メニュー非表示時のコンテンツ表示状態にする */
+  padding: calc(var(--header-height) + 1rem) .5rem 1rem;
+  transition: margin-left var(--transition);
+  z-index: 1;
+}
+  /* メニュー表示時：メニュー幅分の余白を開ける */
+  @media (min-width: 992px) {
+    .main {
+      margin-left: var(--menu-width);
+      padding-right: 1rem;
+      padding-left: 1rem;
+    }
+    /* 右利きモード */
+    :host-context(.right-hand-mode) .main {
+      margin-left: 0;
+      margin-right: var(--menu-width);
+    }
+  }
