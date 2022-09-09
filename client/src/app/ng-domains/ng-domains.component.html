@@ -2,16 +2,20 @@
 <app-error *ngIf="error$ | async as error" [error]="error"></app-error>
 
 <ng-container *ngIf="(isLoading$ | async) !== true && (ngDomains$ | async) as ngDomains">
-  <form [formGroup]="form" (ngSubmit)="create()">
+  <form class="form-one-line" [formGroup]="form" (ngSubmit)="create()">
     <input type="text" formControlName="domain" placeholder="NG ドメインを追加">
-    <button type="submit" [disabled]="form.invalid">登録</button>
+    <button type="submit" class="button-info" [disabled]="form.invalid">登録</button>
   </form>
   
   <app-warning *ngIf="ngDomains.length === 0" [message]="'表示できる情報はありません。'"></app-warning>
-  <ol *ngIf="ngDomains.length">
-    <li *ngFor="let ngDomain of ngDomains">
-      <button type="button" (click)="remove(ngDomain.id)">削除</button>
-      {{ ngDomain.domain }}
-    </li>
-  </ol>
+  
+  <ng-container *ngIf="ngDomains.length">
+    <p>全 {{ ngDomains.length }} 件</p>
+    <ol>
+      <li *ngFor="let ngDomain of ngDomains">
+        <button type="button" class="button-danger button-smaller" (click)="remove(ngDomain.id)">削除</button>
+        {{ ngDomain.domain }}
+      </li>
+    </ol>
+  </ng-container>
 </ng-container>

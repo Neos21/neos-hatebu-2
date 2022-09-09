@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { BehaviorSubject, map } from 'rxjs';
 
+import { NgWord } from '../shared/classes/ng-word';
 import { SharedStateService } from '../shared/services/shared-state.service';
 import { NgWordsService } from '../shared/services/ng-words.service';
-import { NgWord } from '../shared/classes/ng-word';
 
 /** NG ワード管理ページ */
 @Component({
@@ -43,7 +43,6 @@ export class NgWordsComponent implements OnInit, OnDestroy {
       this.dataState$.next({ isLoading: false });
     }
     catch(error) {
-      console.error('NgWordsComponent#ngOnInit() : Failed', error);
       this.dataState$.next({ isLoading: false, error });
     }
   }
@@ -59,8 +58,9 @@ export class NgWordsComponent implements OnInit, OnDestroy {
       this.dataState$.next({});  // Clear Error
       
       const word = `${this.form.value.word}`.trim();
+      const lowerWord = word.toLowerCase();  // チェック用に小文字に統一する
       
-      if(this.ngWords$.getValue()!.some(ngWord => ngWord.word === word)) {  // TODO : 曖昧一致
+      if(this.ngWords$.getValue()!.some(ngWord => ngWord.word.toLowerCase() === lowerWord)) {  // 小文字で曖昧一致 (TODO : 英数字の全半・ひらがな・カタカナ・半角カナを曖昧チェックしたい)
         this.dataState$.next({ error: `${word} は登録済です。` });
         return this.form.reset();
       }

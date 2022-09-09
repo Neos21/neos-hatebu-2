@@ -8,6 +8,8 @@ import { WarningComponent } from './components/warning/warning.component';
 import { ErrorComponent } from './components/error/error.component';
 
 import { HatebuUrlPipe } from './pipes/hatebu-url.pipe';
+import { IsoToJstPipe } from './pipes/iso-to-jst.pipe';
+import { SlashToHyphenPipe } from './pipes/slash-to-hyphen.pipe'
 
 @NgModule({
   imports: [
@@ -20,10 +22,12 @@ import { HatebuUrlPipe } from './pipes/hatebu-url.pipe';
     // Components
     LoadingComponent,
     WarningComponent,
+    WarningComponent,
     ErrorComponent,
     // Pipes
     HatebuUrlPipe,
-    WarningComponent
+    IsoToJstPipe,
+    SlashToHyphenPipe
   ],
   exports: [
     // Re-Export
@@ -31,10 +35,14 @@ import { HatebuUrlPipe } from './pipes/hatebu-url.pipe';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    // Common
+    // Components
     LoadingComponent,
     WarningComponent,
-    ErrorComponent
+    ErrorComponent,
+    // Pipes
+    HatebuUrlPipe,
+    IsoToJstPipe,
+    SlashToHyphenPipe
   ]
 })
 export class SharedModule { }

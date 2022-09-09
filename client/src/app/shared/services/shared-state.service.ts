@@ -14,7 +14,7 @@ export class SharedStateService {
    * @param pageTitle ページタイトル
    */
   public setPageTitle(pageTitle: string = ''): void {
-    setTimeout(() => {  // `ExpressionChangedAfterItHasBeenCheckedError` 対策
+    window.setTimeout(() => {  // `ExpressionChangedAfterItHasBeenCheckedError` 対策
       this.pageTitle$.next(pageTitle);
     }, 0);
   }

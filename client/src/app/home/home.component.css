@@ -1,0 +1,93 @@
+/* このページ内のボタン
+ * ================================================================================ */
+
+/* `color`・`border-color` に同色を指定すること */
+button {
+  display: block;
+}
+  /* `background` を変更すること */
+  button:hover {
+    color: #fff !important;  /* コンポーネント化されている関係で優先度が下がってしまうので `!important` 指定 */
+  }
+
+
+/* Entries Info
+ * ================================================================================ */
+
+.entries-info {
+  margin-bottom: 1rem;
+}
+  .entries-info-count {  /* span */
+    display: inline-block;
+    width: 2.5em;  /* 桁ズレ防止・3桁まで */
+    text-align: right;
+    white-space: nowrap;
+  }
+
+
+/* Entry : 共通部分は `styles.css` に記載
+ * ================================================================================ */
+
+/* 削除ボタンエリア */
+.entry-remove {
+  grid-area: entry-remove;  /* 高さ `auto` でグリッド配置しているので `align-self: end` がなくても下に張り付く */
+  
+  padding-top: .25rem;  /* サムネイルとの隙間・突っ張り棒 */
+}
+  .entry-remove button {
+    width: 100%;
+    border-color: #e72437;
+    color       : #e72437;
+  }
+    .entry-remove button:hover {
+      background: #e72437;
+    }
+
+
+/* 操作ボタン類
+ * ================================================================================ */
+
+.control-buttons {
+  margin-top: calc(var(--thumbnail-height) - 1.25rem);  /* 1件目の「削除する」ボタンがある位置に揃える */
+  margin-bottom: 2rem;  /* ページ下部に適当にスペースを開ける */
+  display: grid;
+  grid-template: "control-buttons-left control-buttons-right" auto
+                / 1fr                  1fr;
+}
+
+/* ボタン */
+.control-buttons button {
+  margin-bottom: 2.5rem;  /* 下の行のボタンとの隙間 */
+  min-width: var(--thumbnail-width);  /* 最低でもサムネイル = 「削除する」ボタンと同じ幅にする */
+  border-color: #007bff;
+  color       : #007bff;
+}
+  .control-buttons button:hover {
+    background: #007bff;
+  }
+
+/* 左利きモード時の左カラム = 右利きモード時の右カラム */
+.control-buttons-left,
+:host-context(.right-hand-mode) .control-buttons-right {
+  grid-area: control-buttons-left;
+  
+  text-align: left;
+}
+  .control-buttons-left button,
+  :host-context(.right-hand-mode) .control-buttons-right button {
+    margin-right: auto;
+    margin-left : 0;
+  }
+
+/* 左利きモード時の右カラム = 右利きモード時の左カラム */
+.control-buttons-right,
+:host-context(.right-hand-mode) .control-buttons-left {
+  grid-area: control-buttons-right;
+  
+  text-align: right;
+}
+  .control-buttons-right button,
+  :host-context(.right-hand-mode) .control-buttons-left button {
+    margin-right: 0;
+    margin-left : auto;
+  }

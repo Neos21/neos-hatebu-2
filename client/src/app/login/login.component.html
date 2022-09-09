@@ -1,17 +1,16 @@
-<h1>Login</h1>
-
 <form [formGroup]="form" (ngSubmit)="login()">
-  <dl>
-    <dt>User Name</dt>
-    <dd>
-      <p><input type="text" formControlName="userName"></p>
-    </dd>
-    <dt>Password</dt>
-    <dd>
-      <p><input type="password" formControlName="password"></p>
-    </dd>
-  </dl>
-  <p><button type="submit" [disabled]="form.invalid">Login</button></p>
+  <p>
+    <label>
+      User Name
+      <input type="text" formControlName="userName">
+    </label>
+  </p>
+  <p>
+    <label>
+      Password
+      <input type="password" formControlName="password">
+    </label>
+  <p><button type="submit" class="button-info" [disabled]="form.invalid">Login</button></p>
 </form>
 
 <app-error *ngIf="error != null" [error]="error"></app-error>

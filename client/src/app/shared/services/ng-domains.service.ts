@@ -17,11 +17,14 @@ export class NgDomainsService {
   /**
    * NG ドメイン一覧を取得する
    * 
+   * @param isForce `true` を指定したら強制再取得する
    * @return NG ドメイン一覧
    */
-  public async findAll(): Promise<Array<NgDomain>> {
-    const cachedNgDomains = this.ngDomains$.getValue();
-    if(cachedNgDomains != null) return cachedNgDomains;  // キャッシュを返す
+  public async findAll(isForce?: boolean): Promise<Array<NgDomain>> {
+    if(!isForce) {
+      const cachedNgDomains = this.ngDomains$.getValue();
+      if(cachedNgDomains != null) return cachedNgDomains;  // キャッシュを返す
+    }
     // キャッシュがなければ取得してキャッシュする
     const ngDomains = await firstValueFrom(this.httpClient.get<Array<NgDomain>>(`${environment.serverUrl}/api/ng-domains`));
     this.ngDomains$.next(ngDomains);

@@ -17,11 +17,14 @@ export class NgUrlsService {
   /**
    * NG URL 一覧を取得する
    * 
+   * @param isForce `true` を指定したら強制再取得する
    * @return NG URL 一覧
    */
-  public async findAll(): Promise<Array<NgUrl>> {
-    const cachedNgUrls = this.ngUrls$.getValue();
-    if(cachedNgUrls != null) return cachedNgUrls;  // キャッシュを返す
+  public async findAll(isForce?: boolean): Promise<Array<NgUrl>> {
+    if(!isForce) {
+      const cachedNgUrls = this.ngUrls$.getValue();
+      if(cachedNgUrls != null) return cachedNgUrls;  // キャッシュを返す
+    }
     // キャッシュがなければ取得してキャッシュする
     const ngUrls = await firstValueFrom(this.httpClient.get<Array<NgUrl>>(`${environment.serverUrl}/api/ng-urls`));
     this.ngUrls$.next(ngUrls);

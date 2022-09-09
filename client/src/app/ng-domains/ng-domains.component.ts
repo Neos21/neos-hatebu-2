@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { BehaviorSubject, map } from 'rxjs';
 
+import { NgDomain } from '../shared/classes/ng-domain';
 import { SharedStateService } from '../shared/services/shared-state.service';
 import { NgDomainsService } from '../shared/services/ng-domains.service';
-import { NgDomain } from '../shared/classes/ng-domain';
 
 /** NG ドメイン管理ページ */
 @Component({
@@ -43,7 +43,6 @@ export class NgDomainsComponent implements OnInit, OnDestroy {
       this.dataState$.next({ isLoading: false });
     }
     catch(error) {
-      console.error('NgDomainsComponent#ngOnInit() : Failed', error);
       this.dataState$.next({ isLoading: false, error });
     }
   }
@@ -58,10 +57,10 @@ export class NgDomainsComponent implements OnInit, OnDestroy {
     try {
       this.dataState$.next({});  // Clear Error
       
-      // プロトコル部分があれば除去しておく
-      const domain = `${this.form.value.domain}`.trim().replace(/^https?:\/\//, '');
+      // 小文字に統一する・プロトコル部分があれば除去しておく
+      const domain = `${this.form.value.domain}`.trim().toLowerCase().replace(/^https?:\/\//, '');
       
-      if(this.ngDomains$.getValue()!.some(ngDomain => ngDomain.domain === domain)) {  // TODO : 曖昧一致
+      if(this.ngDomains$.getValue()!.some(ngDomain => ngDomain.domain === domain)) {
         this.dataState$.next({ error: `${domain} は登録済です。` });
         return this.form.reset();
       }

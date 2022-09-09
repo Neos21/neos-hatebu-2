@@ -17,11 +17,14 @@ export class NgWordsService {
   /**
    * NG ワード一覧を取得する
    * 
+   * @param isForce `true` を指定したら強制再取得する
    * @return NG ワード一覧
    */
-  public async findAll(): Promise<Array<NgWord>> {
-    const cachedNgWords = this.ngWords$.getValue();
-    if(cachedNgWords != null) return cachedNgWords;  // キャッシュを返す
+  public async findAll(isForce?: boolean): Promise<Array<NgWord>> {
+    if(!isForce) {
+      const cachedNgWords = this.ngWords$.getValue();
+      if(cachedNgWords != null) return cachedNgWords;  // キャッシュを返す
+    }
     // キャッシュがなければ取得してキャッシュする
     const ngWords = await firstValueFrom(this.httpClient.get<Array<NgWord>>(`${environment.serverUrl}/api/ng-words`));
     this.ngWords$.next(ngWords);

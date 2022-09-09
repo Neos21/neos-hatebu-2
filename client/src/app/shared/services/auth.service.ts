@@ -4,11 +4,14 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
+import { Logger } from '../classes/logger';
+
 import { ApiService } from './api.service';
 
 /** 認証サービス */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   /** ログインしているか否か (セッションの有無) */
   public isLogined = false;
   /** JWT アクセストークン : LocalStorage からのインメモリキャッシュ */
@@ -37,11 +40,11 @@ export class AuthService {
       // どのページを初期表示しても良いように全ての必要な API データを読み込んでおく
       await this.apiService.fetchAll();
       // ログイン状態に切り替える
-      console.log('AuthService#login() : Succeeded');
+      this.logger.log('#login() : Succeeded');
       this.isLogined = true;
     }
     catch(error) {
-      console.warn('AuthService#login() : Failed', { userName, password }, error);
+      this.logger.warn('#login() : Failed', { userName, password }, error);
       this.isLogined = false;
       throw error;
     }
@@ -55,8 +58,10 @@ export class AuthService {
       if(authInfo == null) throw new Error('Auth info does not exist');
       const { userName, password } = JSON.parse(authInfo);
       await this.login(userName, password);
+      this.logger.log('#reLogin() : Succeeded');
     }
     catch(error) {
+      this.logger.warn('#reLogin() : Failed to re-login. Redirect to login page', error);
       // TODO : 通信エラー時に「自動再ログイン失敗」のメッセージを表示する
       // sessionStorage.setItem(appConstants.sessionStorage.loginInitMessageKey, `自動再ログイン失敗 : ${JSON.stringify(error)}`);
       throw error;
@@ -74,18 +79,18 @@ export class AuthService {
     // API データのキャッシュを削除する
     this.apiService.removeAllCaches();
     // ログアウト状態にする
-    console.log('AuthService#logout() : Succeeded');
+    this.logger.log('#logout() : Succeeded');
     this.isLogined = false;
   }
   
-  /** JWT 認証の確認用 : ユーザ情報を取得する */
-  public async findProfile(): Promise<void> {
+  /** JWT 認証の確認用 : ユーザ情報を取得する (現状未使用) */
+  private async findProfile(): Promise<void> {
     try {
       const result = await firstValueFrom(this.httpClient.get<{ userName: string }>(`${environment.serverUrl}/api/profile`));
-      console.log('AuthService#findProfile() : Succeeded', result);
+      this.logger.log('#findProfile() : Succeeded', result);
     }
     catch(error) {
-      console.error('AuthService#findProfile() : Failed', error);
+      this.logger.error('#findProfile() : Failed', error);
       throw error;
     }
   }
