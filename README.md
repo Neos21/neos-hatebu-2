@@ -17,17 +17,14 @@
 $ cd ./client/
 $ npm install
 $ npm run build
+$ cd ../
 
 # Server
 $ cd ./server/
-$ npm install
+$ npm install  # `--build-from-source`
 $ npm run build
-
 # Start Server At Port 2323 (Default)
-$ cd ./server/
-$ nohup npm start &
-# or
-$ nohup node ./dist/main.js &
+$ nohup node ./dist/main.js &  # $ nohup npm start &
 ```
 
 

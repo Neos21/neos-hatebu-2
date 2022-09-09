@@ -9,6 +9,10 @@
     - Check `./.env`, `./src/main.ts` and `./src/common/configs/configuration.ts` file
 - Start Server
     - `$ npm start` : Port 2323 (Default)
+    - If `DriverPackageNotInstalledError: SQLite package has not been found installed. Try to install it: npm install sqlite3 --save` error has occurred :
+        - `$ rm -rf ./node_modules/`
+        - `$ npm --force cache clean`
+        - `$ npm install --build-from-source`
 - Make sure WSL IP is public
 - Database File
     - `./db/neos-hatebu.sqlite3.db` (Default)
