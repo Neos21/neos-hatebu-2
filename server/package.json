@@ -4,9 +4,8 @@
   "private": true,
   "scripts": {
     "// Production": "echo 'Production ----------------------------------------------------------'",
-    "prebuild": "npx rimraf ./dist",
-    "build"   : "nest build",
-    "start"   : "node ./dist/main.js",
+    "build": "npx rimraf ./dist && nest build",
+    "start": "node ./dist/main.js",
     
     "// Development": "echo 'Development --------------------------------------------------------'",
     "dev" : "nest start --watch",

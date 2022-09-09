@@ -30,14 +30,8 @@ export class LoginComponent implements OnInit {
       userName: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
-    this.sharedStateService.setPageTitle('Login');
-    
+    this.sharedStateService.setPageTitle('');  // アプリ名を表示する
     this.authService.logout();  // ログインページに遷移した時はログイン情報を削除しておく
-    
-    // TODO : 初期表示時に表示するフィードバックメッセージがあれば表示する
-    //const initMessage = sessionStorage.getItem(appConstants.sessionStorage.loginInitMessageKey);
-    //sessionStorage.removeItem(appConstants.sessionStorage.loginInitMessageKey);
-    //if(initMessage) this.message = initMessage;
   }
   
   /** ログイン試行する */

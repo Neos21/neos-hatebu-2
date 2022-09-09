@@ -116,14 +116,18 @@ button.button-smaller {
 }
 
 
-/* Form : 1行フォーム用
+/* Form
  * ================================================================================ */
 
+/* 1行フォーム用 : テキストボックス・ボタン・ボタンの並び */
 form.form-one-line {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 1fr auto auto;
   column-gap: .5rem;
 }
+  form.form-one-line button:last-of-type {
+    margin-left: .75rem;
+  }
 
 
 /* Entry

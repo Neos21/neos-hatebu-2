@@ -8,5 +8,5 @@ import { Component, Input } from '@angular/core';
 })
 export class LoadingComponent {
   /** ローディングメッセージ */
-  @Input() public message = '読込中…';
+  @Input() public message: string = '読込中…';
 }

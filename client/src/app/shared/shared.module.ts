@@ -11,6 +11,7 @@ import { HatebuUrlPipe } from './pipes/hatebu-url.pipe';
 import { IsoToJstPipe } from './pipes/iso-to-jst.pipe';
 import { SlashToHyphenPipe } from './pipes/slash-to-hyphen.pipe'
 
+/** Shared Module */
 @NgModule({
   imports: [
     CommonModule,
@@ -21,7 +22,6 @@ import { SlashToHyphenPipe } from './pipes/slash-to-hyphen.pipe'
   declarations: [
     // Components
     LoadingComponent,
-    WarningComponent,
     WarningComponent,
     ErrorComponent,
     // Pipes

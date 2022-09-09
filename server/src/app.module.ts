@@ -1,7 +1,7 @@
 import * as path from 'path';
 
 import { MiddlewareConsumer, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RouterModule } from '@nestjs/core';
 import { ScheduleModule} from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -38,23 +38,29 @@ import { AppService } from './app.service';
       load: [configuration]  // 環境変数を読み取り適宜デフォルト値を割り当てるオブジェクトをロードする
     }),
     // TypeORM : https://docs.nestjs.com/techniques/database
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: path.resolve(__dirname, '../db/neos-hatebu.sqlite3.db'),  // TODO : 環境変数注入できるようにするか要検討
-      entities: [
-        Category,
-        Entry,
-        NgUrl,
-        NgWord,
-        NgDomain
-      ],
-      synchronize: true
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'sqlite',
+        database: configService.get<string>('dbFilePath') || path.resolve(__dirname, '../db/neos-hatebu.sqlite3.db'),
+        entities: [
+          Category,
+          Entry,
+          NgUrl,
+          NgWord,
+          NgDomain
+        ],
+        synchronize: true
+      })
     }),
     // Cron 定期実行機能用
     ScheduleModule.forRoot(),
     // ビルドした Angular 資材を配信する
-    ServeStaticModule.forRoot({
-      rootPath: path.resolve(__dirname, '../../client/dist')  // TODO : 環境変数注入できるようにするか要検討
+    ServeStaticModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => [{
+        rootPath: configService.get<string>('staticDirectoryPath') || path.resolve(__dirname, '../../client/dist')
+      }]
     }),
     
     // Modules
@@ -84,9 +90,7 @@ import { AppService } from './app.service';
 })
 export class AppModule {
   /**
-   * 独自のミドルウェア適用する
-   * 
-   * - 参考 : https://docs.nestjs.com/middleware
+   * 独自のミドルウェア適用する : https://docs.nestjs.com/middleware
    * 
    * @param middlewareConsumer Middleware Consumer
    */

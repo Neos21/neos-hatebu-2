@@ -14,9 +14,7 @@ button {
 /* Entries Info
  * ================================================================================ */
 
-.entries-info {
-  margin-bottom: 1rem;
-}
+/* .entries-info { } */
   .entries-info-count {  /* span */
     display: inline-block;
     width: 2.5em;  /* 桁ズレ防止・3桁まで */

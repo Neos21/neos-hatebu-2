@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, map } from 'rxjs';
 
 import { NgWord } from '../shared/classes/ng-word';
+
 import { SharedStateService } from '../shared/services/shared-state.service';
 import { NgWordsService } from '../shared/services/ng-words.service';
 
@@ -54,13 +55,13 @@ export class NgWordsComponent implements OnInit, OnDestroy {
   
   /** 登録する */
   public async create(): Promise<void> {
+    this.dataState$.next({});  // Clear Error
     try {
-      this.dataState$.next({});  // Clear Error
-      
       const word = `${this.form.value.word}`.trim();
-      const lowerWord = word.toLowerCase();  // チェック用に小文字に統一する
       
-      if(this.ngWords$.getValue()!.some(ngWord => ngWord.word.toLowerCase() === lowerWord)) {  // 小文字で曖昧一致 (TODO : 英数字の全半・ひらがな・カタカナ・半角カナを曖昧チェックしたい)
+      // NOTE : 登録データは重複がないように曖昧一致で確認する
+      const fuzzyWord = this.ngWordsService.transformText(word);
+      if(this.ngWords$.getValue()!.some(ngWord => this.ngWordsService.transformText(ngWord.word) === fuzzyWord)) {
         this.dataState$.next({ error: `${word} は登録済です。` });
         return this.form.reset();
       }
@@ -79,9 +80,21 @@ export class NgWordsComponent implements OnInit, OnDestroy {
    * @param id 削除する ID
    */
   public async remove(id: number): Promise<void> {
+    this.dataState$.next({});  // Clear Error
     try {
-      this.dataState$.next({});  // Clear Error
       await this.ngWordsService.remove(id);
+    }
+    catch(error) {
+      this.dataState$.next({ error });
+    }
+  }
+  
+  /** 全件再読込する */
+  public async reloadAll(): Promise<void> {
+    this.dataState$.next({ isLoading: true });
+    try {
+      await this.ngWordsService.findAll(true);
+      this.dataState$.next({ isLoading: false });
     }
     catch(error) {
       this.dataState$.next({ error });

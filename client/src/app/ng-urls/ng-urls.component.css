@@ -1,0 +1,9 @@
+.control-buttons {
+  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: .5rem;
+}
+  .control-buttons div:last-of-type {
+    justify-self: end;
+  }

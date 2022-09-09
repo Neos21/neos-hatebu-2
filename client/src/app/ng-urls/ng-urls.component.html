@@ -1,1 +1,40 @@
-<p>ng-urls works!</p>
+<app-loading *ngIf="isLoading$ | async"></app-loading>
+<app-error *ngIf="error$ | async as error" [error]="error"></app-error>
+
+<ng-container *ngIf="(isLoading$ | async) !== true">
+  <div class="control-buttons">
+    <div><button type="button" class="button-info" (click)="toggleShow()">{{ isShownAll ? '省略' : '全件' }}表示</button></div>
+    <div><button type="button" class="button-info" (click)="reloadAll()">再読込</button></div>
+  </div>
+  
+  <app-warning *ngIf="ngUrls.length === 0" [message]="'表示できる情報はありません。'"></app-warning>
+  
+  <ng-container *ngIf="ngUrls.length">
+    <p>全 {{ ngUrls.length }} 件</p>
+    
+    <div class="entry" *ngFor="let entry of ngUrls">
+      <a class="entry-info" target="_blank" rel="noreferrer noopener" [href]="entry.url">
+        <div class="entry-info-title">
+          <span class="entry-info-title-favicon">
+            <img *ngIf="entry.faviconUrl" [src]="entry.faviconUrl">
+          </span>
+          {{ entry.title }}
+        </div>
+        <div class="entry-info-description">
+          {{ entry.description }}
+        </div>
+      </a>
+      
+      <div class="entry-meta">
+        <a href="{{ entry.url | hatebuUrl }}" target="_blank" rel="noreferrer noopener" class="entry-meta-count">
+          <span class="entry-meta-count-container">{{ entry.count }}</span> Users
+        </a>
+        <span class="entry-meta-date">{{ entry.date | slashToHyphen }}</span>
+      </div>
+      
+      <div class="entry-thumbnail">
+        <img *ngIf="entry.thumbnailUrl" [src]="entry.thumbnailUrl">
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

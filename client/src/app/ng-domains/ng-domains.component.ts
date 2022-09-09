@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, map } from 'rxjs';
 
 import { NgDomain } from '../shared/classes/ng-domain';
+
 import { SharedStateService } from '../shared/services/shared-state.service';
 import { NgDomainsService } from '../shared/services/ng-domains.service';
 
@@ -54,10 +55,9 @@ export class NgDomainsComponent implements OnInit, OnDestroy {
   
   /** 登録する */
   public async create(): Promise<void> {
+    this.dataState$.next({});  // Clear Error
     try {
-      this.dataState$.next({});  // Clear Error
-      
-      // 小文字に統一する・プロトコル部分があれば除去しておく
+      // NOTE : 登録データは小文字に統一する・プロトコル部分があれば除去しておく
       const domain = `${this.form.value.domain}`.trim().toLowerCase().replace(/^https?:\/\//, '');
       
       if(this.ngDomains$.getValue()!.some(ngDomain => ngDomain.domain === domain)) {
@@ -79,9 +79,21 @@ export class NgDomainsComponent implements OnInit, OnDestroy {
    * @param id 削除する ID
    */
   public async remove(id: number): Promise<void> {
+    this.dataState$.next({});  // Clear Error
     try {
-      this.dataState$.next({});  // Clear Error
       await this.ngDomainsService.remove(id);
+    }
+    catch(error) {
+      this.dataState$.next({ error });
+    }
+  }
+  
+  /** 全件再読込する */
+  public async reloadAll(): Promise<void> {
+    this.dataState$.next({ isLoading: true });
+    try {
+      await this.ngDomainsService.findAll(true);
+      this.dataState$.next({ isLoading: false });
     }
     catch(error) {
       this.dataState$.next({ error });

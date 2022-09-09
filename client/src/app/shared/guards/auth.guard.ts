@@ -6,7 +6,10 @@ import { AuthService } from '../services/auth.service';
 /** 認証ガード */
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-  constructor(private readonly router: Router, private readonly authService: AuthService) { }
+  constructor(
+    private readonly router: Router,
+    private readonly authService: AuthService
+  ) { }
   
   /**
    * 遷移前に認証チェックする・ログ出力は `AuthService` に任せる

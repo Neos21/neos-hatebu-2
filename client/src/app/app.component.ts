@@ -2,8 +2,8 @@ import { Component, Inject, OnInit, Renderer2 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { NavigationEnd, Router } from '@angular/router';
 
-import { AuthService } from './shared/services/auth.service';
 import { SharedStateService } from './shared/services/shared-state.service';
+import { AuthService } from './shared/services/auth.service';
 import { CategoriesService } from './shared/services/categories.service';
 
 /** App Component */
@@ -22,8 +22,8 @@ export class AppComponent implements OnInit {
     private readonly router: Router,
     private readonly renderer2: Renderer2,
     @Inject(DOCUMENT) private readonly document: Document,
-    public readonly authService: AuthService,                // メニュー表示切替・ログイン・ログアウト用
     public readonly sharedStateService: SharedStateService,  // ページタイトル表示用
+    public readonly authService: AuthService,                // メニュー表示切替・ログイン・ログアウト用
     public readonly categoriesService: CategoriesService     // カテゴリ一覧の参照用
   ) { }
   

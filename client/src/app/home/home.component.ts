@@ -72,13 +72,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       
       // NG 情報のフィルタ処理
       category.entries = category.entries.filter(entry => {
-        // NG ドメイン : 大文字・小文字関係なくドメインを含んでいないこと
+        // NG ドメイン : NG ドメインは登録時に小文字に統一しているので、小文字に変換して確認する
         const lowerUrl = entry.url.toLowerCase();
-        if(ngDomains.some(ngDomain => lowerUrl.includes(ngDomain.domain.toLowerCase()))) return false;
-        // NG ワード : タイトルと本文を対象にする (TODO : 英数字の全半・ひらがな・カタカナ・半角カナを曖昧チェックしたい)
-        if(ngWords.some(ngWord => `${entry.title}\n${entry.description}`.includes(ngWord.word))) return false;
-        // NG URL
-        if(ngUrls.some(ngUrl => lowerUrl.includes(ngUrl.url.toLowerCase()))) return false;
+        if(ngDomains.some(ngDomain => lowerUrl.includes(ngDomain.domain))) return false;
+        // NG ワード : タイトルと本文を対象に曖昧一致で除外する
+        const fuzzyWord = this.api.ngWords.transformText(`${entry.title} ${entry.description}`);
+        if(ngWords.some(ngWord => fuzzyWord.includes(this.api.ngWords.transformText(ngWord.word)))) return false;
+        // NG URL : 記事データを複製する形で NG URL を登録しているので、完全一致で良い
+        if(ngUrls.some(ngUrl => entry.url === ngUrl.url)) return false;
         // いずれにも一致しなかったら残す
         return true;
       });
@@ -122,7 +123,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     }
     catch(error) {
-      this.logger.warn('#removeEntry() : Failed', error);
+      this.logger.error('#removeEntry() : Failed', viewIndex, entry, error);
       this.dataState$.next({ error });
     }
   }
@@ -150,7 +151,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
   
   /**
-   * 現在のカテゴリをスクレイピングして再表示する
+   * 現在のカテゴリを再読込して再表示する
    * 
    * @param currentCategoryId カテゴリ ID
    */
@@ -249,6 +250,8 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   private movePage(categoryId: number): void {
     this.logger.debug(`#moveCategory() : Category ID [${categoryId}]`);
+    this.dataState$.next({ isLoading: true });  // 画面遷移に向けてローディング状態に変えておく
+    this.category = undefined;
     this.router.navigate(['/home'], { queryParams: { [this.queryParamKey]: categoryId }});
   }
 }

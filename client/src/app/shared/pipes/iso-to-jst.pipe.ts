@@ -3,10 +3,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 /** ISO 8601 形式の日時文字列を JST に変換する */
 @Pipe({ name: 'isoToJst' })
 export class IsoToJstPipe implements PipeTransform {
+  /** タイムゾーンのオフセット値 (分単位) */
+  private readonly timeoneOffset = new Date().getTimezoneOffset();
   /** JST は UTC の9時間後 (`60 * 9`)・それを分単位で表現したモノ */
   private readonly jstOffsetMinutes = 540;
   /** 分単位からミリ秒単位に変換する */
   private readonly minutesToMilliSeconds = 60000;
+  /** 実行環境に左右されず JST を得るためのオフセット値 */
+  private readonly offset = (this.timeoneOffset + this.jstOffsetMinutes) * this.minutesToMilliSeconds;
   
   /**
    * ISO 8601 形式の日時文字列 (`YYYY-MM-DDTHH:mm:SS.sssZ`) を JST (`YYYY-MM-DD HH:mm:SS`) に変換する
@@ -18,7 +22,7 @@ export class IsoToJstPipe implements PipeTransform {
     const dateTime = new Date(isoDateTime);
     if(dateTime.toString() === 'Invalid Date') return isoDateTime;  // 形式不一致
     // 実行環境に左右されず JST を得る
-    const jstDateTime = new Date(dateTime.getTime() + ((new Date().getTimezoneOffset() + this.jstOffsetMinutes) * this.minutesToMilliSeconds));
+    const jstDateTime = new Date(dateTime.getTime() + this.offset);
     const jstDateTimeString = jstDateTime.getFullYear()
       + '-' + `0${jstDateTime.getMonth() + 1}`.slice(-2)
       + '-' + `0${jstDateTime.getDate()}`     .slice(-2)

@@ -40,7 +40,7 @@ export class CategoriesService {
    */
   public async findById(id: number, isForce?: boolean): Promise<Category> {
     let categories = this.categories$.getValue()!;
-    if(categories == null) {  // 万が一全くデータがなかったら取得してしまう
+    if(categories == null) {  // 万が一データがなかったら取得してしまう
       categories = await this.findAll();
     }
     const targetIndex = categories.findIndex(category => category.id === id);

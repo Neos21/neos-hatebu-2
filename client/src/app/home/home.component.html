@@ -2,10 +2,10 @@
 <app-error *ngIf="error$ | async as error" [error]="error"></app-error>
 
 <ng-container *ngIf="(isLoading$ | async) !== true && category">
-  <div class="entries-info">
+  <p class="entries-info">
     <span class="entries-info-count">{{ category.entries == null ? '0' : category.entries.length }}</span> 件
     ({{ category.updatedAt | isoToJst }} クロール)
-  </div>
+  </p>
   
   <app-warning *ngIf="category.entries == null || category.entries.length === 0" [message]="'表示できる記事はありません。'"></app-warning>
   

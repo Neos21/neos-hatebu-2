@@ -1,10 +1,9 @@
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';  // `Req` と `Request` は同じ・型名が Express と衝突するので `Req` を使用した
+import { Controller, Post, Req, UseGuards } from '@nestjs/common';  // `Req` と `Request` は同じ・型名が Express と衝突するので `Req` を使用した
 import { JwtService } from '@nestjs/jwt';
 
 import { Request } from 'express';
 
 import { LocalAuthGuard } from './local-auth.guard';
-import { JwtAuthGuard } from './jwt-auth.guard';
 
 /** 認証ルーティング・コントローラ */
 @Controller('auth')
@@ -26,17 +25,5 @@ export class AuthController {
   @Post('login')
   public login(@Req() req: Request): { accessToken: string } {
     return { accessToken: this.jwtService.sign(req.user!) };
-  }
-  
-  /**
-   * JWT 認証の確認用 : ユーザ情報を返す
-   * 
-   * @param req リクエスト
-   * @return JWT 認証に成功した場合ユーザ情報
-   */
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  public findProfile(@Req() req: Request): { userName: string; } {
-    return req.user as { userName: string; };
   }
 }

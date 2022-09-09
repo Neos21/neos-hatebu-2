@@ -27,8 +27,7 @@
             "main"      : "./src/main.ts",
             "tsConfig"  : "./tsconfig.json",
             "assets": [
-              "./src/favicon.ico",
-              "./src/assets"
+              "./src/favicon.ico"
             ],
             "styles": [
               "./src/styles.css"
@@ -51,7 +50,7 @@
               "outputHashing"   : "all"
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "production"  // 通常の `$ ng build` が `--configuration=production` となる
         },
         "serve": {  // `$ ng serve` : https://github.com/angular/angular-cli/blob/14.2.1/packages/angular_devkit/build_angular/src/builders/server/schema.json
           "builder": "@angular-devkit/build-angular:dev-server",

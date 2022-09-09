@@ -22,7 +22,10 @@ export class AuthService {
   /** ユーザ名・パスワード・JWT アクセストークンを保存する LocalStorage キー名 */
   private readonly authInfoStorageKey = 'auth_info';
   
-  constructor(private readonly httpClient: HttpClient, private readonly apiService: ApiService) { }
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly apiService: ApiService
+  ) { }
   
   /**
    * ログインする
@@ -61,10 +64,8 @@ export class AuthService {
       this.logger.log('#reLogin() : Succeeded');
     }
     catch(error) {
-      this.logger.warn('#reLogin() : Failed to re-login. Redirect to login page', error);
-      // TODO : 通信エラー時に「自動再ログイン失敗」のメッセージを表示する
-      // sessionStorage.setItem(appConstants.sessionStorage.loginInitMessageKey, `自動再ログイン失敗 : ${JSON.stringify(error)}`);
-      throw error;
+      this.logger.error('#reLogin() : Failed to re-login. Redirect to login page', error);
+      throw error;  // 自動再ログインに失敗した場合は `AuthGuard` より `LoginComponent` に遷移し以下の `#logout()` が呼ばれて初期化される
     }
     finally {
       this.isReLogining = false;
@@ -81,17 +82,5 @@ export class AuthService {
     // ログアウト状態にする
     this.logger.log('#logout() : Succeeded');
     this.isLogined = false;
-  }
-  
-  /** JWT 認証の確認用 : ユーザ情報を取得する (現状未使用) */
-  private async findProfile(): Promise<void> {
-    try {
-      const result = await firstValueFrom(this.httpClient.get<{ userName: string }>(`${environment.serverUrl}/api/profile`));
-      this.logger.log('#findProfile() : Succeeded', result);
-    }
-    catch(error) {
-      this.logger.error('#findProfile() : Failed', error);
-      throw error;
-    }
   }
 }

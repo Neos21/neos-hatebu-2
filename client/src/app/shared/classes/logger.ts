@@ -10,6 +10,7 @@ const indexes   = logLevels.reduce((indexes: { [key: string]: number }, logLevel
 
 /** 環境変数から読み込んだログレベル */
 const logLevel = (() => {
+  window.console.log('Environment', environment);  // 環境変数を出力しておく
   if(environment.logLevel == null) return 'all';  // 環境変数未定義
   const logLevel = environment.logLevel.toLowerCase();
   if(!logLevels.includes(logLevel)) return 'all';  // 不正値
@@ -47,7 +48,7 @@ export class Logger {
   private print(methodName: string, ...args: Array<any>): void {
     if(index <= indexes[methodName]) {
       try {
-        // `YYYY/MM/DD HH:mm:SS` 形式になる
+        // `YYYY/MM/DD HH:mm:SS` 形式にする
         const now = new Date().toLocaleDateString(undefined,{
           year  : 'numeric',
           month : '2-digit',
@@ -58,11 +59,12 @@ export class Logger {
         });
         (window.console as any)[methodName](now, `[${this.context}]`, ...args);
       }
-      catch(error) {  // ロギングに失敗した場合
+      catch(error) {  // ログ出力に失敗した場合
         window.console.error(`Logger#${methodName}() : Failed to logging`, error);
       }
     }
-    //else {  // ロギングしない
+    // ログ出力しない
+    //else {
     //  // window.console.debug(`Logger#${methodName}() : Not logging`, this.index, this.indexes[methodName]);
     //}
   }

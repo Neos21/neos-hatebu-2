@@ -3,8 +3,9 @@
 
 <ng-container *ngIf="(isLoading$ | async) !== true && (ngWords$ | async) as ngWords">
   <form class="form-one-line" [formGroup]="form" (ngSubmit)="create()">
-    <input type="text" formControlName="word" placeholder="NG ワードを追加">
+    <input type="text" placeholder="NG ワードを追加" formControlName="word">
     <button type="submit" class="button-info" [disabled]="form.invalid">登録</button>
+    <button type="button" class="button-info" (click)="reloadAll()">再読込</button>
   </form>
   
   <app-warning *ngIf="ngWords.length === 0" [message]="'表示できる情報はありません。'"></app-warning>

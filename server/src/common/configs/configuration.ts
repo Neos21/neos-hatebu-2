@@ -51,11 +51,13 @@ const getBooleanValue = (envName: string): boolean => {
 
 /** 環境変数のオブジェクトを返す : この関数内にオブジェクトを定義しないと環境変数が読み込まれない */
 export const configuration = (): { [key: string]: string | number | boolean } => ({
-  port              : getNumberValue ('NEOS_HATEBU_PORT'                 , 2323                        ),  // ポート番号
-  userName          : getStringValue ('NEOS_HATEBU_USERNAME'             , 'CHANGE-THIS-USER-NAME'     ),  // ユーザ名   : 本当はエラーにすべきか
-  password          : getStringValue ('NEOS_HATEBU_PASSWORD'             , 'CHANGE-THIS-PASSWORD'      ),  // パスワード : 本当はエラーにすべきか
-  jwtSecretKey      : getStringValue ('NEOS_HATEBU_JWT_SECRET_KEY'       , 'CHANGE-THIS-JWT-SECRET-KEY'),  // JWT 秘密鍵 : 本当はエラーにすべきか
-  jwtExpiresIn      : getStringValue ('NEOS_HATEBU_JWT_EXPIRES_IN'       , '7 days'                    ),  // JWT 有効期限
-  removingNgUrlsDays: getNumberValue ('NEOS_HATEBU_REMOVING_NG_URLS_DAYS', 7                           ),  // `ng_urls` の保持期間 : 本日数以前のレコードを Cron Job で削除する
-  noColour          : getBooleanValue('NO_COLOR'                                                       ),  // ロガーの色付けをしない : NestJS のロガー `cli-colors.util.js` と同じ環境変数名・確認のため宣言
+  port               : getNumberValue ('NEOS_HATEBU_PORT'                 , 2323                        ),  // ポート番号
+  userName           : getStringValue ('NEOS_HATEBU_USERNAME'             , 'CHANGE-THIS-USER-NAME'     ),  // ユーザ名   : 本当はエラーにすべきか
+  password           : getStringValue ('NEOS_HATEBU_PASSWORD'             , 'CHANGE-THIS-PASSWORD'      ),  // パスワード : 本当はエラーにすべきか
+  jwtSecretKey       : getStringValue ('NEOS_HATEBU_JWT_SECRET_KEY'       , 'CHANGE-THIS-JWT-SECRET-KEY'),  // JWT 秘密鍵 : 本当はエラーにすべきか
+  jwtExpiresIn       : getStringValue ('NEOS_HATEBU_JWT_EXPIRES_IN'       , '7 days'                    ),  // JWT 有効期限
+  removingNgUrlsDays : getNumberValue ('NEOS_HATEBU_REMOVING_NG_URLS_DAYS', 7                           ),  // `ng_urls` の保持期間 : 本日数以前のレコードを Cron Job で削除する
+  dbFilePath         : getStringValue ('NEOS_HATEBU_DB_FILE_PATH'         , ''                          ),  // DB ファイルパス : 未指定の場合は `app.module.ts` 内で初期値を設定する
+  staticDirectoryPath: getStringValue ('NEOS_HATEBU_STATIC_DIRECTORY_PATH', ''                          ),  // 静的ファイルのディレクトリ : 未指定の場合は `app.module.ts` 内で初期値を設定する
+  noColour           : getBooleanValue('NO_COLOR'                                                       ),  // ロガーの色付けをしない : NestJS のロガー `cli-colors.util.js` と同じ環境変数名・確認のため宣言
 });

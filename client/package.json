@@ -5,12 +5,11 @@
   "scripts": {
     "// Production": "echo 'Production : Serve `http://localhost:8080/dist/index.html` ----------'",
     "build": "ng build",
-    "serve": "npx sirv-cli ./ --host 0.0.0.0",
+    "start": "npx sirv-cli ./ --host 0.0.0.0",
     
     "// Development": "echo 'Development : Before executing this, Publish WSL IP ----------------'",
-    "start": "ng serve",
-    "dev"  : "ng serve",
-    "lint" : "ng lint",
+    "dev" : "ng serve",
+    "lint": "ng lint",
     
     "// Commands": "echo 'Dependencies And DevDependencies Commands -----------------------------'",
     "ng"    : "ng",
