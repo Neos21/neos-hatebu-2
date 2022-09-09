@@ -55,6 +55,7 @@ export class NgWordsComponent implements OnInit, OnDestroy {
   
   /** 登録する */
   public async create(): Promise<void> {
+    if(this.form.value.word == null || this.form.value.word.trim() === '') return;  // iOS で空登録ができてしまうバグ回避
     this.dataState$.next({});  // Clear Error
     try {
       const word = `${this.form.value.word}`.trim();

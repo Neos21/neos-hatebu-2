@@ -36,6 +36,7 @@ button {
     width: 100%;
     border-color: #e72437;
     color       : #e72437;
+    font-size: .875rem;
   }
     .entry-remove button:hover {
       background: #e72437;

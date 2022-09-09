@@ -55,6 +55,7 @@ export class NgDomainsComponent implements OnInit, OnDestroy {
   
   /** 登録する */
   public async create(): Promise<void> {
+    if(this.form.value.domain == null || this.form.value.domain.trim() === '') return;  // iOS で空登録ができてしまうバグ回避
     this.dataState$.next({});  // Clear Error
     try {
       // NOTE : 登録データは小文字に統一する・プロトコル部分があれば除去しておく
