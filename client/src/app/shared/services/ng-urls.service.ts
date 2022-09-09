@@ -41,7 +41,7 @@ export class NgUrlsService {
     const createdNgUrl = await firstValueFrom(this.httpClient.post<NgUrl>(`${environment.serverUrl}/api/ng-urls`, ngUrl));
     // 登録後のエンティティをキャッシュに追加する
     const ngUrls = this.ngUrls$.getValue()!;
-    ngUrls.push(createdNgUrl);
+    ngUrls.unshift(createdNgUrl);  // 配列の先頭に追加する
     this.ngUrls$.next(ngUrls);
     return createdNgUrl;
   }
