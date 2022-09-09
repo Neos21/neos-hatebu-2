@@ -34,26 +34,6 @@ body {
   margin: 0;
 }
 
-input[type="text"], input[type="password"] {
-  height: calc(1.5em + 0.75rem + 2px);
-  outline: 0;
-  border: 1px solid #ced4da;
-  border-radius: .25rem;
-  padding: 0.375rem 0.75rem;
-  color: #495057;
-  font-size: 16px;  /* iOS でズームされないように固定する */
-  font-family: var(--font-family-monospace);
-  line-height: 1.5;
-  background: #fff;
-  transition: border-color .12s, box-shadow .12s;
-  user-select: element;  /* この要素内に限りテキスト選択させる */
-}
-  input[type="text"    ]:hover, input[type="text"    ]:focus,
-  input[type="password"]:hover, input[type="password"]:focus {
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
-  }
-
 a {
   text-decoration: none;
 }
@@ -68,6 +48,31 @@ li {
 }
 
 
+/* Text Box
+ * ================================================================================ */
+
+input[type="text"], input[type="password"] {
+  height: calc(1.5em + 0.75rem + 2px);
+  outline: 0;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  padding: 0.375rem 0.75rem;
+  color: #495057;
+  font-size: 16px;  /* iOS でズームされないように固定する */
+  font-family: var(--font-family-monospace);
+  line-height: 1.5;
+  vertical-align: middle;
+  background: #fff;
+  transition: border-color .12s, box-shadow .12s;
+  user-select: element;  /* この要素内に限りテキスト選択させる */
+}
+  input[type="text"    ]:hover, input[type="text"    ]:focus,
+  input[type="password"]:hover, input[type="password"]:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
+  }
+
+
 /* Button
  * ================================================================================ */
 
@@ -79,6 +84,7 @@ button {
   color: #fff;
   font-size: 16px;  /* テキストボックスと高さを揃える */
   line-height: 1.5;
+  vertical-align: middle;
   background: transparent;
   cursor: pointer;
   transition: color .12s, border-color .12s, background .12s;
